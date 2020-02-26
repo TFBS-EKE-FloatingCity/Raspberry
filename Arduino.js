@@ -1,24 +1,22 @@
-const ArduinoInterface = require('./ArduinoInterface')
-const SPI = require('pi-spi')
+const { parentPort } = require('worker_threads');
+const Arduino = require('./comm/Arduino')
 
-class Arduino extends ArduinoInterface
-{
-    constructor(device, speed)
-    {
-        super(device, speed);
+async function init() {
+    const arduino = new Arduino('/dev/spidev0.0', 4e6);
 
-        this.spi = SPI.initialize(this.device);
-    }
-
-    read(readcount, cb)
-    {
-        this.spi.read(readcount, cb);
-    }
-
-    write(data, cb)
-    {
-        this.spi.write(data, cb);
+    while(true) {
+        // await sleep(100);
+        arduino.read(3, (error, result) => {
+            arduino.write(result, () => {})
+            // parentPort.postMessage({ data: result })
+        });    
     }
 }
+  
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
-module.exports = Arduino;
+init();
