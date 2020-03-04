@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "pi-spi": "^1.2.1"
+    "pi-spi": "^1.2.1",
+    "request": "^2.88.2"
   }
 }
