@@ -2,6 +2,7 @@ const { parentPort } = require('worker_threads');
 const request = require('request');
 
 let data = [];
+let oldData = [];
 
 async function init() {
     parentPort.on('message', message => { data = message; });

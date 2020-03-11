@@ -11,6 +11,11 @@ class ArduinoInterface {
     read(data, cb) {
         throw "Missing implementation";
     }
+
+    transfer(data, incount, cb)
+    {
+        throw "Missing implementation";
+    }
 }
 
 module.exports = ArduinoInterface;

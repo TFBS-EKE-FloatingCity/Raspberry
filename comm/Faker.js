@@ -32,6 +32,11 @@ class Faker extends ArduinoInterface
     {
         cb(null, 'Im just fake');
     }
+
+    transfer(data, incount, cb)
+    {
+        cb(null, Buffer.from([Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)]));
+    }
 }
 
 module.exports = Faker;

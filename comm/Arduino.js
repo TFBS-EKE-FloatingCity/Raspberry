@@ -1,13 +1,13 @@
 const ArduinoInterface = require('./ArduinoInterface')
-const SPI = require('pi-spi')
+const SPI = require('pi-spi');
 
 class Arduino extends ArduinoInterface
 {
     constructor(device, speed)
     {
         super(device, speed);
-
         this.spi = SPI.initialize(this.device);
+		this.spi.clockSpeed(this.speed);
     }
 
     read(readcount, cb)
@@ -18,6 +18,11 @@ class Arduino extends ArduinoInterface
     write(data, cb)
     {
         this.spi.write(data, cb);
+    }
+
+    transfer(data, incount, cb)
+    {
+        this.spi.transfer(Buffer.from(data), incount, cb);
     }
 }
 
