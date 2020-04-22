@@ -1,4 +1,6 @@
 const { parentPort } = require('worker_threads');
+// source of data Faker or Arduino for real arduino
+// './comm/Faker' or './comm/Arduino'
 const Arduino = require('./comm/Faker')
 
 let commands = [];
@@ -13,8 +15,9 @@ async function init() {
         let command = commands.shift()
         if (!command) { command = ''; }
 
+        // TODO real size 3 bytes * 10 sensors
+        // sadly the raspberry pi needs to be the master of the spi communication
 		arduino.transfer(command, 3 * 10, (error, result) => {
-            // console.log(result.toString());
             parentPort.postMessage({ data: result })
         });
     }
