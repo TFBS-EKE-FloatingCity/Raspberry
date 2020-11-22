@@ -43,6 +43,6 @@
 
         // max len of files to 140 is standart
         "max-len": ["error", 140],
-        "indent": ["error", 2]
+        "indent": ["error", 4]
     }
 }
