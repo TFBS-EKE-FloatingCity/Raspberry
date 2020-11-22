@@ -42,6 +42,7 @@
         "class-methods-use-this": ["off"],
 
         // max len of files to 140 is standart
-        "max-len": ["error", 140]
+        "max-len": ["error", 140],
+        "indent": ["error", 2]
     }
 }
