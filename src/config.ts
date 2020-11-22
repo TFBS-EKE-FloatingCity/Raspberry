@@ -8,10 +8,10 @@ export interface IFloatingCityConfig {
 
 let configBuilder = null;
 try {
-  // eslint-disable-next-line global-require
-  configBuilder = require('../config.json');
+    // eslint-disable-next-line global-require
+    configBuilder = require('../config.json');
 } catch (e) {
-  logger.error('Could not find ../config.json', e);
+    logger.error('Could not find ../config.json', e);
 }
 
 export const config: IFloatingCityConfig = configBuilder;

@@ -16,15 +16,15 @@ app.use(helmet());
 app.use(bodyParser.json());
 
 app.get('/ping', (req, res) => {
-  res.send('pong');
+    res.send('pong');
 });
 app.use('/*', (req, res) => {
-  res.status(404).send({
-    message: 'Not Found',
-  });
+    res.status(404).send({
+        message: 'Not Found',
+    });
 });
 app.listen(app.get('port'), () => {
-  logger.info(`listening on port ${app.get('port')}`);
+    logger.info(`listening on port ${app.get('port')}`);
 });
 
 socketService.init(config);
