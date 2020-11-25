@@ -1,19 +1,18 @@
-export interface ISocketSensorData {
-    modules: [IModule, IModule, IModule];
-}
-
 export interface IModule {
     // sector name
     sector: 'One' | 'Two' | 'Three';
 
-    //eg 150mm
+    // eg 150mm
     sensorOutside: number;
 
-    //eg 150mm
+    // eg 150mm
     sensorInside: number;
 
     // -100% - 100%
     pumpLevel: number;
+}
+export interface ISocketSensorData {
+    modules: [IModule, IModule, IModule];
 }
 
 export interface ISocketSimulationData {
