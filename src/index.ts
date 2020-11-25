@@ -23,8 +23,8 @@ app.use('/*', (req, res) => {
         message: 'Not Found',
     });
 });
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     logger.info(`listening on port ${app.get('port')}`);
 });
 
-socketService.init(config);
+socketService.start(server);

@@ -26,6 +26,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "quotes": ["error", "backstick"],
         "import/extensions": [
             "error",
             "ignorePackages",
