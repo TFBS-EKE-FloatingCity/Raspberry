@@ -33,22 +33,16 @@ class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
-
-        this.sendTestData();
+        setInterval(this.sendTestData, 5000);
     }
 
-    private async sendTestData() {
-        while(true) {
-            await new Promise((resolve) => {
-                setTimeout(resolve, 1000);
-            });
-            logger.info(`try send test data`)
-            if (this.connections && this.connections.length > 0) {
-                logger.info(`send test data`)
-                for (const connection of this.connections) {
-                    logger.info(`send test data to ${connection.uuid}`)
-                    connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
-                }
+    private sendTestData() {
+        logger.info(`try send test data`)
+        if (this.connections && this.connections.length > 0) {
+            logger.info(`send test data`)
+            for (const connection of this.connections) {
+                logger.info(`send test data to ${connection.uuid}`)
+                connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
             }
         }
     }
