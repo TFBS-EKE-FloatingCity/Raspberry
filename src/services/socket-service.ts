@@ -14,7 +14,6 @@ class SocketService {
 
     connections: IWebsocketConnection[] = [];
 
-    // Todo: SocketServer
     public start(server: HttpServer) {
         this.socketIOServer = new SocketIO(server);
         this.socketIOServer.on('connect', (socket) => {
