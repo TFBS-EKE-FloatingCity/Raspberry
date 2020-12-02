@@ -33,8 +33,14 @@ class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
+        setInterval(this.sendTestData, 5000);
     }
 
+    private sendTestData() {
+        for (const connection of this.connections) {
+            connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
+        }
+    }
 
     public sendSensorData(data: ISocketSensorData) {
         for (const connection of this.connections) {
