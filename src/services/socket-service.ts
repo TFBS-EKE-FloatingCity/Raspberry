@@ -42,7 +42,7 @@ class SocketService {
             logger.info(`send test data`)
             for (const connection of this.connections) {
                 logger.info(`send test data to ${connection.uuid}`)
-                connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
+                connection.socket.emit('sensorData', {test: "Das ist eine Test JSON"})
             }
         }
     }
@@ -50,7 +50,7 @@ class SocketService {
     public sendSensorData(data: ISocketSensorData) {
         if (this.connections && this.connections.length > 0) {
             for (const connection of this.connections) {
-                connection.socket.emit('senorData', data)
+                connection.socket.emit('sensorData', data)
             }
         } else {
             console.info(`Can not send sensorData => ${this.connections.length} client(s) connected.`)
