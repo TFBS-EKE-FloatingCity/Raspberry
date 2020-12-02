@@ -37,8 +37,11 @@ class SocketService {
     }
 
     private sendTestData() {
+        logger.info(`try send test data`)
         if (this.connections && this.connections.length > 0) {
+            logger.info(`send test data`)
             for (const connection of this.connections) {
+                logger.info(`send test data to ${connection.uuid}`)
                 connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
             }
         }
