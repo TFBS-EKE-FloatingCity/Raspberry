@@ -25,7 +25,7 @@ class SocketService {
                     uuid: uuid,
                     socket: socket
                 })
-                logger.info(`new client ${uuid} is connected`)
+                logger.info(`new client ${uuid} is connected. ${this.connections.length} client(s) now connected.`)
             });
             socket.once('disconnect', () => {
                 logger.info(`client ${uuid} is disconnecting`);
@@ -37,14 +37,20 @@ class SocketService {
     }
 
     private sendTestData() {
-        for (const connection of this.connections) {
-            connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
+        if (this.connections && this.connections.length > 0) {
+            for (const connection of this.connections) {
+                connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
+            }
         }
     }
 
     public sendSensorData(data: ISocketSensorData) {
-        for (const connection of this.connections) {
-            connection.socket.emit('senorData', data)
+        if (this.connections && this.connections.length > 0) {
+            for (const connection of this.connections) {
+                connection.socket.emit('senorData', data)
+            }
+        } else {
+            console.info(`Can not send sensorData => ${this.connections.length} client(s) connected.`)
         }
     }
 
