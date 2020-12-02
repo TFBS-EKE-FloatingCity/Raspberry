@@ -33,7 +33,7 @@ class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
-        setInterval(() => this.sendTestData, 5000);
+        setInterval(() => this.sendTestData(), 5000);
     }
 
     private sendTestData() {
