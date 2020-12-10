@@ -4,7 +4,7 @@ import SocketIO, { Server as SocketIOServer, Socket } from 'socket.io';
 import { v4 as uuidGenerator } from 'uuid';
 
 import { IWebsocketConnection } from '../interfaces/socket-service';
-import {ISocketSensorData} from "../interfaces/socket-payload";
+import {IModule, ISocketSensorData} from "../interfaces/socket-payload";
 
 const logger = getLogger('socket-service');
 
@@ -15,6 +15,7 @@ class SocketService {
     connections: IWebsocketConnection[] = [];
 
     public start(server: HttpServer) {
+        logger.info(`start socket.io server`)
         this.socketIOServer = new SocketIO(server);
         this.socketIOServer.on('connect', (socket) => {
             const uuid = uuidGenerator();
@@ -36,21 +37,11 @@ class SocketService {
         setInterval(() => this.sendTestData(), 5000);
     }
 
-    private sendTestData() {
-        logger.info(`try send test data`)
-        if (this.connections && this.connections.length > 0) {
-            logger.info(`send test data`)
-            for (const connection of this.connections) {
-                logger.info(`send test data to ${connection.uuid}`)
-                connection.socket.emit('senorData', {test: "Das ist eine Test JSON"})
-            }
-        }
-    }
 
     public sendSensorData(data: ISocketSensorData) {
         if (this.connections && this.connections.length > 0) {
             for (const connection of this.connections) {
-                connection.socket.emit('senorData', data)
+                connection.socket.emit('sensorData', data)
             }
         } else {
             console.info(`Can not send sensorData => ${this.connections.length} client(s) connected.`)
@@ -64,6 +55,39 @@ class SocketService {
             })
         }
     }
+
+    private sendTestData() {
+        const moduleOne: IModule = {
+            sector: "One",
+            sensorOutside: this.getRandomInt(100,400),
+            sensorInside: this.getRandomInt(100,400),
+            pumpLevel: this.getRandomInt(-100,100)
+        }
+        const moduleTwo: IModule = {
+            sector: "Two",
+            sensorOutside: this.getRandomInt(100,400),
+            sensorInside: this.getRandomInt(100,400),
+            pumpLevel: this.getRandomInt(-100,100)
+        }
+        const moduleThree: IModule = {
+            sector: "Three",
+            sensorOutside: this.getRandomInt(100,400),
+            sensorInside: this.getRandomInt(100,400),
+            pumpLevel: this.getRandomInt(-100,100)
+        }
+
+        const sensorData: ISocketSensorData = {
+            modules: [moduleOne, moduleTwo, moduleThree]
+        }
+        this.sendSensorData(sensorData)
+    }
+
+    private getRandomInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.round(Math.floor(Math.random() * (max - min)) + min);
+    }
+
 }
 
 export const socketService = new SocketService();
