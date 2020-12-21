@@ -1,4 +1,26 @@
 {
     "endpoint": "http://localhost:1234",
-    "sendInterval": 5000
+    "sendInterval": 5000,
+    "mcDevices": [
+        {
+            "name": "One",
+            "Bus": 1,
+            "gpio": 0
+        },
+        {
+            "name": "Two",
+            "Bus": 1,
+            "gpio": 1
+        },
+        {
+            "name": "Three",
+            "Bus": 1,
+            "gpio": 2
+        }
+    ],
+    "ambientDevice": {
+        "name": "Ambient",
+        "Bus": 0,
+        "gpio": 0
+    }
 }

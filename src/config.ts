@@ -1,9 +1,18 @@
 import { getLogger } from 'log4js';
+import { Sector } from './interfaces/common';
 
 const logger = getLogger('config');
 
 export interface IFloatingCityConfig {
   endpoint: string;
+  mcDevices: [IDeviceConfig, IDeviceConfig, IDeviceConfig],
+  ambientDevice: IDeviceConfig
+}
+
+export interface IDeviceConfig {
+  gpio: number;
+  bus: number;
+  name: Sector | "Ambient"
 }
 
 let configBuilder = null;
