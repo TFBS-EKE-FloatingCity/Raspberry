@@ -1,12 +1,13 @@
-version: "3.3"
+version: '3.3'
 
-services: 
-  node:
-    build: 
-      context: .
-      dockerfile: Dockerfile-node
-    volumes:
-      -  ./..:/app
-    working_dir: /app
-    ports: 
-      - '8080:8080'
+services:
+    node:
+        build:
+            context: .
+            dockerfile: Dockerfile-node
+        volumes:
+            - ./..:/app
+        working_dir: /app
+        ports:
+            - '8080:8080'
+        restart: unless-stopped
