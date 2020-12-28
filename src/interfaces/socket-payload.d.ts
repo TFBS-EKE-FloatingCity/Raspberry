@@ -1,6 +1,6 @@
 export interface IModule {
     // sector name
-    sector: 'One' | 'Two' | 'Three';
+    sector: Sector;
 
     // eg 150mm
     sensorOutside: number;
