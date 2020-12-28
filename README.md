@@ -37,6 +37,43 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update && sudo apt install yarn
 ```
 
+
+### Installation (Windows)
+
+
+-   Install NodeJS
+
+
+Install Node-Verion-Manager with setup: https://github.com/coreybutler/nvm-windows/releases/tag/1.1.7
+```shell
+nvm install 14.15.1
+
+nvm use 14.15.1
+```
+
+
+-   Install Yarn
+
+Install: https://classic.yarnpkg.com/en/docs/install/#windows-stable
+<br>
+Restart all Commandline Tools (Including IDE)
+
+
+-   Install Windows Build Tools
+
+Method 1.
+```shell
+yarn global add windows-build-tools
+```
+
+Method 2.
+<br>
+Install C++ Tools in Visual Studio
+
+
+
+### Checkout and run
+
 -   Clone repository
 
 ```shell
