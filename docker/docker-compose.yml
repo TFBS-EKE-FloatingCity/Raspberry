@@ -2,11 +2,10 @@ version: '3.3'
 
 services:
     node:
-        build:
-            context: .
-            dockerfile: Dockerfile-node
+        image: node:14.15
         volumes:
             - ./..:/app
+        command: bash -c 'yarn && yarn start'
         working_dir: /app
         ports:
             - '8080:8080'
