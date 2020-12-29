@@ -4,23 +4,23 @@
     "mcDevices": [
         {
             "name": "One",
-            "Bus": 1,
+            "bus": 1,
             "gpio": 0
         },
         {
             "name": "Two",
-            "Bus": 1,
+            "bus": 1,
             "gpio": 1
         },
         {
             "name": "Three",
-            "Bus": 1,
+            "bus": 1,
             "gpio": 2
         }
     ],
     "ambientDevice": {
         "name": "Ambient",
-        "Bus": 0,
+        "bus": 0,
         "gpio": 0
     }
 }
