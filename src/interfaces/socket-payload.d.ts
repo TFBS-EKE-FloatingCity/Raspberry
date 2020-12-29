@@ -12,6 +12,7 @@ export interface IModule {
     pumpLevel: number;
 }
 export interface ISocketSensorData {
+    timestamp: number;
     modules: [IModule, IModule, IModule];
 }
 

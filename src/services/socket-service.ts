@@ -3,7 +3,7 @@ import { Server as HttpServer } from 'http';
 import SocketIO, { Server as SocketIOServer, Socket } from 'socket.io';
 import { v4 as uuidGenerator } from 'uuid';
 
-import { IWebsocketConnection } from '../interfaces/socket-service';
+import {IWebsocketConnection, IWebsocketMessage, IWebsocketResponse} from '../interfaces/socket-service';
 import {IModule, ISocketSensorData} from "../interfaces/socket-payload";
 
 const logger = getLogger('socket-service');
@@ -24,7 +24,8 @@ class SocketService {
                 // TODO: Authenticate ??
                 this.connections.push({
                     uuid: uuid,
-                    socket: socket
+                    socket: socket,
+                    messageQueue: []
                 })
                 logger.info(`new client ${uuid} is connected. ${this.connections.length} client(s) now connected.`)
             });
@@ -38,21 +39,39 @@ class SocketService {
     }
 
 
-    public sendSensorData(data: ISocketSensorData) {
+    public async sendSensorData(data: ISocketSensorData) {
         if (this.connections && this.connections.length > 0) {
             for (const connection of this.connections) {
-                connection.socket.emit('sensorData', data)
+                if (connection.messageQueue.length === 0) {
+                    //Set response event handler
+                    connection.socket.on('sensorDataResponse', (data: IWebsocketResponse) => {
+                        //acknowledge data and delete it out of message queue
+                        if (data.status === 'ack' && data.id) {
+                            connection.messageQueue.splice(connection.messageQueue.findIndex(message => message.uuid === data.id), 1)
+                        }
+                        //remove event listeners if no messages are pending
+                        if (connection.messageQueue.length === 0) {
+                            connection.socket.removeAllListeners('sensorDataResponse');
+                        }
+                    })
+                }
+
+                //create new socket message object
+                const socketMessage: IWebsocketMessage = {
+                    uuid: uuidGenerator(),
+                    payload: data
+                }
+                //push socket message to message queue
+                connection.messageQueue.push(socketMessage);
+
+                //try to send the whole queue
+                //TODO: outsource or make smarter maybe??
+                for (const message of connection.messageQueue) {
+                    await connection.socket.emit('sensorData', message)
+                }
             }
         } else {
             console.info(`Can not send sensorData => ${this.connections.length} client(s) connected.`)
-        }
-    }
-
-    public sendTestObject() {
-        for (const connection of this.connections) {
-            connection.socket.emit('testData', {
-                data: 'works!!'
-            })
         }
     }
 
@@ -77,6 +96,7 @@ class SocketService {
         }
 
         const sensorData: ISocketSensorData = {
+            timestamp: Date.now(),
             modules: [moduleOne, moduleTwo, moduleThree]
         }
         this.sendSensorData(sensorData)
