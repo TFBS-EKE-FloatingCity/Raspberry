@@ -47,6 +47,22 @@ class SpiService {
     };
 }
 
-export const spiService = new SpiService({
-    devices: [...config.mcDevices, config.ambientDevice],
-});
+let service: SpiService | null = null;
+
+try {
+    service = new SpiService({
+        devices: [
+            {
+                name: 'One',
+                bus: 1,
+                gpio: 0,
+            },
+        ],
+    });
+} catch (error) {
+    logger.warn(
+        "can't initialize the spi service! make sure, that you're not running in docker mode and that SPI is active on the Raspberry Pi"
+    );
+}
+
+export const spiService = service;
