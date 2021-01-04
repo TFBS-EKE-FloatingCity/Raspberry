@@ -4,7 +4,7 @@ import { IDeviceConfig, config } from '../config';
 import { DeviceName } from '../interfaces/common';
 import { IDevice, ISPIConfig } from '../interfaces/spi-service';
 
-const logger = getLogger('config');
+const logger = getLogger('spi-service');
 
 class Device implements IDevice {
     public spiDevice!: SpiDevice;
