@@ -61,7 +61,7 @@ try {
     });
 } catch (error) {
     logger.error(
-        "can't initialize the spi service! make sure that you're not running in docker mode and that SPI is active on the Raspberry Pi"
+        "can't initialize the spi service! make sure that you're not running in docker mode and that SPI is active on the Raspberry Pi", error
     );
 }
 
