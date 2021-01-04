@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import { config } from './config';
 import { socketService } from './services/socket-service';
+import { spiService } from './services/spi-service';
+import { SpiMessage } from 'spi-device';
 
 const logger = getLogger('config');
 const app = express();
@@ -28,3 +30,23 @@ const server = app.listen(app.get('port'), () => {
 });
 
 socketService.start(server);
+
+try {
+    const message: SpiMessage = [
+        {
+            sendBuffer: Buffer.from([5, 0xd0, 0x00, 0x01]), // Sent to read channel 5
+            receiveBuffer: Buffer.alloc(4), // Raw data read from channel 5
+            byteLength: 4,
+            speedHz: 16000, // Use a low bus speed to get a good reading from the TMP36
+        },
+    ];
+
+    setInterval(
+        () => spiService.transfer(message, 'One', (msg) => console.log(msg)),
+        5000
+    );
+} catch (error) {
+    logger.warn(
+        "make sure that you're not running in docker mode and that SPI is active on the Raspberry Pi"
+    );
+}
