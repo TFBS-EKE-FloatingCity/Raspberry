@@ -37,7 +37,7 @@ if (spiService) {
             sendBuffer: Buffer.from([5, 0xd0, 0x00, 0x01]), // Sent to read channel 5
             receiveBuffer: Buffer.alloc(4), // Raw data read from channel 5
             byteLength: 4,
-            speedHz: 16000, // Use a low bus speed to get a good reading from the TMP36
+            speedHz: 1000000, // Use a low bus speed to get a good reading from the TMP36
         },
     ];
     if ((spiService as any).transfer) {
