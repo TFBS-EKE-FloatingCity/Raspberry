@@ -47,21 +47,18 @@ class SpiService {
     };
 }
 
+// if SPI deactivated or the app is running in a docker environment (server)
+// the spi-service will be null
 let service: SpiService | null = null;
 
 try {
     service = new SpiService({
-        devices: [
-            {
-                name: 'One',
-                bus: 1,
-                gpio: 0,
-            },
-        ],
+        devices: [...config.mcDevices, config.ambientDevice],
     });
 } catch (error) {
     logger.error(
-        "can't initialize the spi service! make sure that you're not running in docker mode and that SPI is active on the Raspberry Pi", error
+        "can't initialize the spi service! make sure that you're not running in docker mode and that SPI is active on the Raspberry Pi",
+        error
     );
 }
 
