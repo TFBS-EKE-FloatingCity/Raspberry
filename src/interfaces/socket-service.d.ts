@@ -14,5 +14,5 @@ export interface IWebsocketMessage {
 
 export interface IWebsocketResponse extends ISocketSimulationData {
     status: 'ack' | 'error';
-    id: string;
+    uuid: string;
 }
