@@ -39,13 +39,8 @@ if (spiService) {
         socketService
     );
 
-    (async () => {
-        while (true) {
-            // repeat Measurement after configured delay
-            setTimeout(
-                async () => await mainService.StartApp(),
-                config.mainServiceConf.arduinoDelay
-            );
-        }
-    })();
+    setInterval(
+        async () => await mainService.StartApp(),
+        config.mainServiceConf.arduinoDelay
+    );
 }
