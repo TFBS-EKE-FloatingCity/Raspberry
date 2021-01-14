@@ -1,26 +1,33 @@
 {
     "endpoint": "http://localhost:1234",
     "sendInterval": 5000,
-    "mcDevices": [
-        {
-            "name": "One",
-            "bus": 1,
+    "spiServiceConfig": {
+        "byteLength": 4,
+        "speedHz": 1000,
+        "mcDevices": [
+            {
+                "name": "One",
+                "bus": 1,
+                "gpio": 0
+            },
+            {
+                "name": "Two",
+                "bus": 1,
+                "gpio": 1
+            },
+            {
+                "name": "Three",
+                "bus": 1,
+                "gpio": 2
+            }
+        ],
+        "ambientDevice": {
+            "name": "Ambient",
+            "bus": 0,
             "gpio": 0
-        },
-        {
-            "name": "Two",
-            "bus": 1,
-            "gpio": 1
-        },
-        {
-            "name": "Three",
-            "bus": 1,
-            "gpio": 2
         }
-    ],
-    "ambientDevice": {
-        "name": "Ambient",
-        "bus": 0,
-        "gpio": 0
+    },
+    "mainServiceConf": {
+        "arduinoDelay": 1000
     }
 }

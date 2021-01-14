@@ -1,18 +1,31 @@
 import { getLogger } from 'log4js';
-import { Sector } from './interfaces/common';
+import { DeviceName } from './interfaces/common';
 
 const logger = getLogger('config');
 
 export interface IFloatingCityConfig {
-  endpoint: string;
-  mcDevices: [IDeviceConfig, IDeviceConfig, IDeviceConfig],
-  ambientDevice: IDeviceConfig
+    endpoint: string;
+    spiServiceConfig: ISpiServiceConfig;
+    mainServiceConf: IMainServiceConf;
+}
+export interface IDeviceConfig {
+    gpio: number;
+    bus: number;
+    name: DeviceName;
 }
 
-export interface IDeviceConfig {
-  gpio: number;
-  bus: number;
-  name: Sector | "Ambient"
+export interface IMainServiceConf {
+    /** timeout, after which the Raspberry will request data from the Arduino-Devices */
+    arduinoDelay: number;
+}
+
+export interface ISpiServiceConfig {
+    /** number of bytes to receive */
+    byteLength: number;
+    /** spi clock speed */
+    speedHz: number;
+    mcDevices: [IDeviceConfig, IDeviceConfig, IDeviceConfig];
+    ambientDevice: IDeviceConfig;
 }
 
 let configBuilder = null;

@@ -8,7 +8,7 @@ import {IModule, ISocketSensorData} from "../interfaces/socket-payload";
 
 const logger = getLogger('socket-service');
 
-class SocketService {
+export class SocketService {
     // @ts-ignore
     socketIOServer: SocketIOServer;
 

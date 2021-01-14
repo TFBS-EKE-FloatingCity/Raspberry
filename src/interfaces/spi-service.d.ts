@@ -1,10 +1,7 @@
 import { SpiDevice } from 'spi-device';
-
-export interface ISPIConfig {
-    devices: IDeviceConfig[];
-}
+import { DeviceName } from './common';
 
 export interface IDevice {
     spiDevice: SpiDevice;
-    name: string;
+    name: DeviceName;
 }
