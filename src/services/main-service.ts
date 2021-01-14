@@ -46,17 +46,23 @@ export class MainService {
             modules: this.currentMeasurements as [IModule, IModule, IModule],
         });
 
-        // TODO use in Prod environment
-        // if (this.currentMeasurements.length === 3) {
-
-        // } else {
-        //     logger.warn(
-        //         'the Measurements of exactly three Modules are required!'
-        //     );
-        // }
+        if (this.currentMeasurements.length === 3) {
+            await this.socketService.sendSensorData({
+                timestamp: Date.now(),
+                modules: this.currentMeasurements as [
+                    IModule,
+                    IModule,
+                    IModule
+                ],
+            });
+        } else {
+            logger.warn(
+                'the Measurements of exactly three Modules are required!'
+            );
+        }
 
         // repeat Measurement after configured delay
-        setTimeout(this.StartApp, this.conf.arduinoDelay);
+        setTimeout(async () => await this.StartApp(), this.conf.arduinoDelay);
     }
 
     /**
