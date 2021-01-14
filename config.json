@@ -1,9 +1,9 @@
 {
     "endpoint": "http://localhost:1234",
     "sendInterval": 5000,
-    "byteLength": 4,
-    "speedHz": 1000,
     "spiServiceConfig": {
+        "byteLength": 4,
+        "speedHz": 1000,
         "mcDevices": [
             {
                 "name": "One",
