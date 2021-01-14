@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io';
+import {ISocketSimulationData} from './socket-payload';
 
 export interface IWebsocketConnection {
     uuid: string;
@@ -11,7 +12,7 @@ export interface IWebsocketMessage {
     payload: any;
 }
 
-export interface IWebsocketResponse {
+export interface IWebsocketResponse extends ISocketSimulationData {
     status: 'ack' | 'error';
-    id: string;
+    uuid: string;
 }
