@@ -1,3 +1,5 @@
+import { Sector } from './common';
+
 export interface IModule {
     // sector name
     sector: Sector;
