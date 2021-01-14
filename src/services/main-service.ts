@@ -39,13 +39,6 @@ export class MainService {
     public async StartApp() {
         this.currentMeasurements = this.readSensorData();
 
-        console.log(this.currentMeasurements);
-
-        await this.socketService.sendSensorData({
-            timestamp: Date.now(),
-            modules: this.currentMeasurements as [IModule, IModule, IModule],
-        });
-
         if (this.currentMeasurements.length === 3) {
             await this.socketService.sendSensorData({
                 timestamp: Date.now(),
@@ -60,9 +53,6 @@ export class MainService {
                 'the Measurements of exactly three Modules are required!'
             );
         }
-
-        // repeat Measurement after configured delay
-        setTimeout(async () => await this.StartApp(), this.conf.arduinoDelay);
     }
 
     /**
