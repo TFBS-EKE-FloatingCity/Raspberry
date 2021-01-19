@@ -29,5 +29,17 @@
     },
     "mainServiceConf": {
         "arduinoDelay": 1000
+    },
+    "trimConfig": {
+        "minimumDifference": 3,
+        "fullSpeedMargin": 20,
+        "outerBounds": {
+            "min": 30,
+            "max": 250
+        },
+        "innerBounds": {
+            "min": 30,
+            "max": 200
+        }
     }
 }

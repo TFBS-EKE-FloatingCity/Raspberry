@@ -7,6 +7,7 @@ export interface IFloatingCityConfig {
     endpoint: string;
     spiServiceConfig: ISpiServiceConfig;
     mainServiceConf: IMainServiceConf;
+    sensorConfig: ISensorConfig;
 }
 export interface IDeviceConfig {
     gpio: number;
@@ -26,6 +27,16 @@ export interface ISpiServiceConfig {
     speedHz: number;
     mcDevices: [IDeviceConfig, IDeviceConfig, IDeviceConfig];
     ambientDevice: IDeviceConfig;
+}
+export interface ISensorConfig {
+    minimumMargin: number;
+    fullSpeedMargin: number;
+    outerBounds: IMinMax;
+    innerBounds: IMinMax;
+}
+export interface IMinMax {
+    min: number;
+    max: number;
 }
 
 let configBuilder = null;

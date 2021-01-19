@@ -1,4 +1,4 @@
-import { Sector } from './common';
+import {Sector} from "./common";
 
 export interface IModule {
     // sector name
@@ -13,7 +13,8 @@ export interface IModule {
     // -100% - 100%
     pumpLevel: number;
 }
-export interface ISocketSensorData {
+
+export interface ISensorData {
     timestamp: number;
     modules: [IModule, IModule, IModule];
 }

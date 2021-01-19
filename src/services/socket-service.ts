@@ -4,7 +4,7 @@ import SocketIO, { Server as SocketIOServer, Socket } from 'socket.io';
 import { v4 as uuidGenerator } from 'uuid';
 
 import {IWebsocketConnection, IWebsocketMessage, IWebsocketResponse} from '../interfaces/socket-service';
-import {IModule, ISocketSensorData} from "../interfaces/socket-payload";
+import {IModule, ISensorData} from "../interfaces/socket-payload";
 
 const logger = getLogger('socket-service');
 
@@ -27,7 +27,7 @@ export class SocketService {
                     socket: socket,
                     messageQueue: []
                 })
-                logger.info(`new client ${uuid} is connected. ${this.connections.length} client(s) now connected.`)
+                logger.info(`new client ${uuid} is connected. ${this.connections.length} client(s) now connected.`);
             });
             socket.once('disconnect', () => {
                 logger.info(`client ${uuid} is disconnecting`);
@@ -39,7 +39,7 @@ export class SocketService {
     }
 
 
-    public async sendSensorData(data: ISocketSensorData) {
+    public async sendSensorData(data: ISensorData) {
         if (this.connections && this.connections.length > 0) {
             for (const connection of this.connections) {
                 if (connection.messageQueue.length === 0) {
@@ -48,7 +48,6 @@ export class SocketService {
                         logger.info(`sensorDataResponse: ${data.uuid} - ${data.status}`)
                         //acknowledge data and delete it out of message queue
                         if (data.status === 'ack' && data.uuid) {
-                            logger.info(`in ack`)
                             connection.messageQueue.splice(connection.messageQueue.findIndex(message => message.uuid === data.uuid), 1)
                             // TODO: Write data into current sim state holder
                         }
@@ -71,6 +70,7 @@ export class SocketService {
                 //TODO: outsource or make smarter maybe??
                 for (const message of connection.messageQueue) {
                     await connection.socket.emit('sensorData', message)
+                    logger.info(`sensorData: ${message.uuid}`)
                 }
             }
         } else {
@@ -98,7 +98,7 @@ export class SocketService {
             pumpLevel: this.getRandomInt(-100,100)
         }
 
-        const sensorData: ISocketSensorData = {
+        const sensorData: ISensorData = {
             timestamp: Date.now(),
             modules: [moduleOne, moduleTwo, moduleThree]
         }
