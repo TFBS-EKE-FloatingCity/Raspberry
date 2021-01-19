@@ -2,7 +2,7 @@
     "endpoint": "http://localhost:1234",
     "sendInterval": 5000,
     "spiServiceConfig": {
-        "byteLength": 4,
+        "byteLength": 6,
         "speedHz": 1000,
         "mcDevices": [
             {

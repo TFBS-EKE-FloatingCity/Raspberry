@@ -68,7 +68,7 @@ export class MainService {
 
                 // TODO real data?!
                 const msg: SpiMessage = this.spiService.createSpiMessage(
-                    Buffer.from([30, 45, 20, 10])
+                    Buffer.from([30, 45, 20, 10, 10, 5])
                 );
 
                 // send message
@@ -83,12 +83,17 @@ export class MainService {
                         `successfully received data from sector ${curr.name}!`
                     );
 
-                    // TODO skip offset 0 because the first byte is padding ?
+                    // TODO check if & works
                     const module: IModule = {
                         sector: curr.name as Sector,
-                        sensorInside: msg[0].receiveBuffer.readInt8(1) ?? 0,
-                        sensorOutside: msg[0].receiveBuffer.readInt8(2) ?? 0,
-                        pumpLevel: msg[0].receiveBuffer.readInt8(3) ?? 0,
+                        sensorInside:
+                            msg[0].receiveBuffer.readInt8(0) &
+                            msg[0].receiveBuffer.readInt8(1),
+                        sensorOutside:
+                            msg[0].receiveBuffer.readInt8(2) &
+                            msg[0].receiveBuffer.readInt8(3),
+                        pumpLevel: msg[0].receiveBuffer.readInt8(4) ?? 0,
+                        // windMill: msg[0].receiveBuffer.readInt8(5) ?? 0,
                     };
 
                     acc.push(module);
