@@ -79,10 +79,12 @@ export class TrimService {
 
         // resize every pump speed to <= 100 / >= -100
         if (trimModules.findIndex(module => Math.abs(module.pumpLevel) > 100)) {
+            // find biggest pump speed
             const biggestPumpSpeedFromZero = trimModules.reduce((prevModule, currentModule) => {
                     return (Math.abs(prevModule.pumpLevel) < Math.abs(currentModule.sensorOutside)) ? prevModule : currentModule
             }).pumpLevel
 
+            // Resize every pump speed value to max 100
             trimModules.forEach(module => {
                 module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero) * 100)
             })
