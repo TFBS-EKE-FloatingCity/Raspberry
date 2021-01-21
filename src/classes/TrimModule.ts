@@ -48,7 +48,7 @@ export class TrimModule implements IModule {
         return this.sensorOutside >= config.sensorConfig.outerBounds.max - overflowMargin
     }
 
-    public setPumpSpeed(average: number, additionalPumpSpeed: number = 0): number {
+    public setPumpSpeed(average: number, energyBalance: number, additionalPumpSpeed: number = 0): number {
         const calculatedPumpSpeed = this.calculatePumpSpeed(average);
         if (calculatedPumpSpeed < 0) {
             if (this.hasInnerMinOverflow() || this.hasOuterMinOverflow()) {
@@ -61,7 +61,7 @@ export class TrimModule implements IModule {
                 return calculatedPumpSpeed + additionalPumpSpeed;
             }
         }
-        this.pumpLevel = calculatedPumpSpeed + additionalPumpSpeed;
+        this.pumpLevel = calculatedPumpSpeed + additionalPumpSpeed + energyBalance;
         return 0;
     }
 

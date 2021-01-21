@@ -61,7 +61,9 @@ export class TrimService {
             const iterationOverflow = overFlowSpeed;
             overFlowSpeed = 0;
             for (let innerIndex of iterations[outerIndex]) {
-                overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                // TODO: Energy Balance (data.energyBalance)
+                // overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, 0, (iterationOverflow / (iterations[outerIndex].length)) * -1);
                 // Was this a overflow?
                 if (overFlowSpeed !== 0) {
                     // Add new Iteration because there was an overflow
@@ -75,6 +77,19 @@ export class TrimService {
             }
         }
 
+
+        // resize every pump speed to <= 100 / >= -100
+        if (trimModules.findIndex(module => Math.abs(module.pumpLevel) > 100)) {
+            const biggestPumpSpeedFromZero = trimModules.reduce((prevModule, currentModule) => {
+                    return (Math.abs(prevModule.pumpLevel) < Math.abs(currentModule.sensorOutside)) ? prevModule : currentModule
+            }).pumpLevel
+
+            trimModules.forEach(module => {
+                module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero) * 100)
+            })
+        }
+
+        //TODO: Insert windmill speed here
         return [
             TrimService.createSpiModuleData("One", trimModules[0].pumpLevel,0),
             TrimService.createSpiModuleData("Two", trimModules[1].pumpLevel,0),
@@ -82,11 +97,11 @@ export class TrimService {
         ]
     }
 
-    private static getNeutralSpiModuleData(): ISpiData {
+    private static getNeutralSpiModuleData(windmillSpeed: number = 0): ISpiData {
         return [
-            TrimService.createSpiModuleData("One",0,0),
-            TrimService.createSpiModuleData("Two",0,0),
-            TrimService.createSpiModuleData("Three",0,0)
+            TrimService.createSpiModuleData("One",0,windmillSpeed),
+            TrimService.createSpiModuleData("Two",0,windmillSpeed),
+            TrimService.createSpiModuleData("Three",0,windmillSpeed)
         ]
     }
 
