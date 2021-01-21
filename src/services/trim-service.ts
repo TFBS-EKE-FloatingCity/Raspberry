@@ -9,7 +9,6 @@ import {getLogger} from "log4js";
 const logger = getLogger('trim-service');
 
 export class TrimService {
-
     public static trim(data: ISensorData): ISpiData {
         if (!data || !data.modules) {
             throw new Error(`trim() => data was null`)
