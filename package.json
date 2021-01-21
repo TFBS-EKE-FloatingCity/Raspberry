@@ -7,7 +7,7 @@
         "start": "ts-node -r ./src/index.ts",
         "format": "eslint --ext .ts --fix ./src",
         "lint": "eslint --ext .ts ./src",
-        "test": "jest --watch"
+        "test": "jest --watchAll"
     },
     "dependencies": {
         "axios": "^0.21.0",
