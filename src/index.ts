@@ -33,11 +33,7 @@ const server = app.listen(app.get('port'), () => {
 socketService.start(server);
 
 if (spiService) {
-    const mainService = new MainService(
-        config.mainServiceConf,
-        spiService,
-        socketService
-    );
+    const mainService = new MainService(spiService, socketService);
 
     setInterval(
         async () => await mainService.StartApp(),
