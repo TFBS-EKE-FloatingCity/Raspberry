@@ -17,12 +17,14 @@ export class MainService {
 
     private socketService: SocketService;
 
+    private trimService: TrimService;
     /**
      * constructor
      */
     constructor(spiService: SpiService, socketService: SocketService) {
         this.spiService = spiService;
         this.socketService = socketService;
+        this.trimService = new TrimService();
 
         // subscribe the socket service to the modules subject
         Store.ModulesSubject.subscribe(this.socketService.sendSensorData);
@@ -33,7 +35,7 @@ export class MainService {
      */
     public async StartApp() {
         // trim data using current measurements
-        const trimData = TrimService.trim(Store.ModulesSubject.value);
+        const trimData = this.trimService.trim(Store.ModulesSubject.value);
 
         // send the trimmed data to Arduinos
         // and write their current measurements into the store
