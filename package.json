@@ -16,6 +16,7 @@
         "helmet": "^4.2.0",
         "http-status": "^1.5.0",
         "log4js": "^6.3.0",
+        "rxjs": "^6.6.3",
         "socket.io": "^2.3.0",
         "spi-device": "^3.1.0",
         "uuid": "^8.3.1"
