@@ -48,11 +48,12 @@ export class SocketService {
                     connection.socket.on('sensorDataResponse', (data: IWebsocketResponse) => {
                         logger.info(`sensorDataResponse: ${data.uuid} - ${data.status}`)
                         //acknowledge data and delete it out of message queue
-                        if (data.status === 'ack' && data.uuid) {
+                        if (data && data.status === 'ack' && data.uuid) {
                             connection.messageQueue.splice(connection.messageQueue.findIndex(message => message.uuid === data.uuid), 1)
 
                             // write sim state into store
                             Store.SimDataSubject.next({sun: data.sun, wind: data.wind, energyBalance: data.energyBalance});
+                            logger.debug(JSON.stringify(data));
                         }
                         //remove event listeners if no messages are pending
                         if (connection.messageQueue.length === 0) {
