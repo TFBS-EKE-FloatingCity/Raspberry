@@ -5,6 +5,7 @@ import { v4 as uuidGenerator } from 'uuid';
 
 import {IWebsocketConnection, IWebsocketMessage, IWebsocketResponse} from '../interfaces/socket-service';
 import {IModule, ISensorData} from "../interfaces/socket-payload";
+import Store from '../store/Store';
 
 const logger = getLogger('socket-service');
 
@@ -49,7 +50,9 @@ export class SocketService {
                         //acknowledge data and delete it out of message queue
                         if (data.status === 'ack' && data.uuid) {
                             connection.messageQueue.splice(connection.messageQueue.findIndex(message => message.uuid === data.uuid), 1)
-                            // TODO: Write data into current sim state holder
+
+                            // write sim state into store
+                            Store.SimDataSubject.next({sun: data.sun, wind: data.wind, energyBalance: data.energyBalance});
                         }
                         //remove event listeners if no messages are pending
                         if (connection.messageQueue.length === 0) {
