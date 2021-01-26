@@ -47,8 +47,9 @@ export class SocketService {
                     connection.socket.on('sensorDataResponse', (data: IWebsocketResponse) => {
                         logger.info(`sensorDataResponse: ${data.uuid} - ${data.status}`)
                         //acknowledge data and delete it out of message queue
-                        if (data.status === 'ack' && data.uuid) {
+                        if (data && data.status === 'ack' && data.uuid) {
                             connection.messageQueue.splice(connection.messageQueue.findIndex(message => message.uuid === data.uuid), 1)
+                            logger.debug(JSON.stringify(data));
                             // TODO: Write data into current sim state holder
                         }
                         //remove event listeners if no messages are pending
