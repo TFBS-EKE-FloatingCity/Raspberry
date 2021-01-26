@@ -1,4 +1,4 @@
-import {ISensorData} from "../interfaces/socket-payload";
+import {ISensorData, ISocketSimulationData} from "../interfaces/socket-payload";
 import {ISpiData, ISpiModuleData} from "../interfaces/spi-service";
 import {config} from "../config";
 import {Sector} from "../interfaces/common";
@@ -7,8 +7,9 @@ import {getLogger} from "log4js";
 
 const logger = getLogger('trim-service');
 
+type TrimData = ISocketSimulationData & ISensorData
 export class TrimService {
-    public trim(data: ISensorData): ISpiData {
+    public trim(data: TrimData): ISpiData {
         if (!data || !data.modules) {
             throw new Error(`trim() => data was null`)
         }
@@ -59,9 +60,8 @@ export class TrimService {
             const iterationOverflow = overFlowSpeed;
             overFlowSpeed = 0;
             for (let innerIndex of iterations[outerIndex]) {
-                // TODO: Energy Balance (data.energyBalance)
                 // overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
-                overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, 0, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
                 // Was this a overflow?
                 if (overFlowSpeed !== 0) {
                     // Add new Iteration because there was an overflow
@@ -95,11 +95,10 @@ export class TrimService {
         }
         logger.debug(JSON.stringify(trimModules));
 
-        //TODO: Insert windmill speed here
         return [
-            TrimService.createSpiModuleData("One", trimModules[0].pumpLevel,0),
-            TrimService.createSpiModuleData("Two", trimModules[1].pumpLevel,0),
-            TrimService.createSpiModuleData("Three", trimModules[2].pumpLevel,0)
+            TrimService.createSpiModuleData("One", trimModules[0].pumpLevel,data.wind),
+            TrimService.createSpiModuleData("Two", trimModules[1].pumpLevel,data.wind),
+            TrimService.createSpiModuleData("Three", trimModules[2].pumpLevel,data.wind)
         ]
     }
 

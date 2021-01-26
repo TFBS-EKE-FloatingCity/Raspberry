@@ -1,8 +1,14 @@
 import {TrimService} from './trim-service';
-import {IModule, ISensorData} from "../interfaces/socket-payload";
+import {IModule, ISensorData, ISocketSimulationData} from "../interfaces/socket-payload";
 import {ISpiData} from "../interfaces/spi-service";
 
 const trimService = new TrimService();
+
+const simData: ISocketSimulationData = {
+    sun: 0,
+    energyBalance:0,
+    wind: 0
+}
 
 it('Test 1. general test', () => {
     const testSensorData: ISensorData = {
@@ -24,7 +30,7 @@ it('Test 1. general test', () => {
             pumpLevel: 0
         }]
     }
-    const data: ISpiData = trimService.trim(testSensorData);
+    const data: ISpiData = trimService.trim({...testSensorData, ...simData});
     expect(data[0].pumpSpeed).toBe(100);
     expect(data[1].pumpSpeed).toBe(0);
     expect(data[2].pumpSpeed).toBe(-100);
@@ -52,7 +58,7 @@ it('Test 2. Test fullspeed margin', () => {
             pumpLevel: 0
         }]
     }
-    const data: ISpiData = trimService.trim(testSensorData);
+    const data: ISpiData = trimService.trim({...testSensorData, ...simData});
     expect(data[0].pumpSpeed).toBe(50);
     expect(data[1].pumpSpeed).toBe(0);
     expect(data[2].pumpSpeed).toBe(-50);
@@ -80,7 +86,7 @@ it('Test 3. "One" can not pump more water out', () => {
             pumpLevel: 0
         }]
     }
-    const data: ISpiData = trimService.trim(testSensorData);
+    const data: ISpiData = trimService.trim({...testSensorData, ...simData});
     expect(data[0].pumpSpeed).toBe(0);
     expect(data[1].pumpSpeed).toBe(33);
     expect(data[2].pumpSpeed).toBe(100);

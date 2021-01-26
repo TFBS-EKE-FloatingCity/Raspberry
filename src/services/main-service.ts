@@ -35,7 +35,10 @@ export class MainService {
      */
     public async StartApp() {
         // trim data using current measurements
-        const trimData = this.trimService.trim(Store.ModulesSubject.value);
+        const trimData = this.trimService.trim({
+            ...Store.ModulesSubject.value,
+            ...Store.SimDataSubject.value,
+        });
 
         // send the trimmed data to Arduinos
         // and write their current measurements into the store
