@@ -1,4 +1,4 @@
-import {Sector} from "./common";
+import { Sector } from './common';
 
 export interface IModule {
     // sector name
@@ -29,8 +29,8 @@ export interface ISocketSimulationData {
     /**
      * -100% - 100%
      *
-     * - : not enough energy is being generated, therefore water must be pumped out
-     * + : enough energy is being generated, therefore water must be pumped in
+     * * "-" : not enough energy is being generated, therefore water must be pumped out
+     * * "+" : enough energy is being generated, therefore water must be pumped in
      */
     energyBalance: number;
 }
