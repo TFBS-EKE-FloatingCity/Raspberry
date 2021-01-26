@@ -8,6 +8,8 @@ import {getLogger} from "log4js";
 const logger = getLogger('trim-service');
 
 type TrimData = ISocketSimulationData & ISensorData
+
+const minimumMargin = config.sensorConfig.minimumMargin;
 export class TrimService {
     public trim(data: TrimData): ISpiData {
         if (!data || !data.modules) {
@@ -29,7 +31,7 @@ export class TrimService {
         const middle = data.modules.filter(module => (module.sector !== highest.sector) && (module.sector !== lowest.sector))[0];
 
         // If under margin => do nothing
-        if ((highest.sensorOutside - lowest.sensorOutside) <= config.sensorConfig.minimumMargin) {
+        if ((highest.sensorOutside - lowest.sensorOutside) <= minimumMargin) {
             return TrimService.getNeutralSpiModuleData();
         }
 
@@ -60,8 +62,16 @@ export class TrimService {
             const iterationOverflow = overFlowSpeed;
             overFlowSpeed = 0;
             for (let innerIndex of iterations[outerIndex]) {
-                // overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+
+                // Maybe disable energy balance if overflow
+                // if (iterations.length > 1) {
+                //     overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, 0, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                // } else {
+                //     overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                // }
+
                 overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+
                 // Was this a overflow?
                 if (overFlowSpeed !== 0) {
                     // Add new Iteration because there was an overflow
@@ -77,15 +87,15 @@ export class TrimService {
 
 
         // find biggest pump speed
-        const biggestPumpSpeedFromZero = trimModules.reduce((prevModule, currentModule) => {
-            return (Math.abs(prevModule.pumpLevel) > Math.abs(currentModule.sensorOutside)) ? prevModule : currentModule
-        })
+        const biggestPumpSpeedFromZero = Math.abs(trimModules.reduce((prevModule, currentModule) => {
+            return (Math.abs(prevModule.pumpLevel) > Math.abs(currentModule.pumpLevel)) ? prevModule : currentModule
+        }).pumpLevel)
 
         // check if biggestpumspeed is over 100% or less then -100%
-        if (Math.abs(biggestPumpSpeedFromZero.pumpLevel) > 100) {
+        if (Math.abs(biggestPumpSpeedFromZero) > 100) {
             // Resize every pump speed value to max 100
             trimModules.forEach(module => {
-                module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero.pumpLevel) * 100)
+                module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero) * 100)
 
                 // -0 was showing up in debugger so for safety reason i wrote this
                 if (module.pumpLevel === -0) {

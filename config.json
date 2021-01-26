@@ -31,7 +31,7 @@
         "arduinoDelay": 1000
     },
     "sensorConfig": {
-        "minimumDifference": 3,
+        "minimumMargin": 3,
         "fullSpeedMargin": 20,
         "outerBounds": {
             "min": 30,
