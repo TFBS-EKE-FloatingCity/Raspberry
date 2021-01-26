@@ -1,21 +1,18 @@
 import { getLogger } from 'log4js';
 import { SpiMessage } from 'spi-device';
-import { IMainServiceConf } from '../config';
 import { Sector } from '../interfaces/common';
 import { IModule } from '../interfaces/socket-payload';
 import { SocketService } from './socket-service';
 import { SpiService } from './spi-service';
+import { ISpiData } from '../interfaces/spi-service';
+import { TrimService } from './trim-service';
+import Store from '../store/Store';
 
 //TODO Send LED commands
-//TODO send Arduino commands
 
 const logger = getLogger('main-service');
 
 export class MainService {
-    private conf: IMainServiceConf;
-
-    private currentMeasurements: IModule[] = [];
-
     private spiService: SpiService;
 
     private socketService: SocketService;
@@ -23,42 +20,35 @@ export class MainService {
     /**
      * constructor
      */
-    constructor(
-        config: IMainServiceConf,
-        spiService: SpiService,
-        socketService: SocketService
-    ) {
-        this.conf = config;
+    constructor(spiService: SpiService, socketService: SocketService) {
         this.spiService = spiService;
         this.socketService = socketService;
+
+        // subscribe the socket service to the modules subject
+        Store.ModulesSubject.subscribe(this.socketService.sendSensorData);
     }
 
     /**
      * Entry Point
      */
     public async StartApp() {
-        this.currentMeasurements = this.readSensorData();
+        // trim data using current measurements
+        const trimData = TrimService.trim(Store.ModulesSubject.value);
 
-        if (this.currentMeasurements.length === 3) {
-            await this.socketService.sendSensorData({
-                timestamp: Date.now(),
-                modules: this.currentMeasurements as [
-                    IModule,
-                    IModule,
-                    IModule
-                ],
-            });
-        } else {
-            logger.warn(
-                'the Measurements of exactly three Modules are required!'
-            );
-        }
+        // send the trimmed data to Arduinos
+        // and write their current measurements into the store
+        Store.ModulesSubject.next({
+            timestamp: Date.now(),
+            modules: this.sendCommandAndReadSensorData(trimData),
+        });
     }
 
     /**
      * retrieves the sensor data of all slaves
      */
-    public readSensorData(): IModule[] {
+    public sendCommandAndReadSensorData(
+        spiData: ISpiData
+    ): [IModule, IModule, IModule] {
         const modules = this.spiService.Devices.reduce<IModule[]>(
             (acc, curr) => {
                 // skip the Ambient LEDs Controller
@@ -66,9 +56,24 @@ export class MainService {
                     return acc;
                 }
 
-                // TODO real data?!
+                const data = spiData.find((s) => s.sector === curr.name);
+
+                if (!data) {
+                    logger.error(
+                        `couldn't retrieve Spi Data for sector ${curr.name}`
+                    );
+                }
+
+                // TODO test
                 const msg: SpiMessage = this.spiService.createSpiMessage(
-                    Buffer.from([30, 45, 20, 10, 10, 5])
+                    Buffer.from([
+                        data?.pumpSpeed,
+                        data?.windmillSpeed,
+                        0,
+                        0,
+                        0,
+                        0,
+                    ])
                 );
 
                 // send message
@@ -108,6 +113,6 @@ export class MainService {
             []
         );
 
-        return modules;
+        return modules as [IModule, IModule, IModule];
     }
 }
