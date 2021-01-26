@@ -1,15 +1,14 @@
-import {IModule, ISensorData} from "../interfaces/socket-payload";
+import {ISensorData} from "../interfaces/socket-payload";
 import {ISpiData, ISpiModuleData} from "../interfaces/spi-service";
 import {config} from "../config";
 import {Sector} from "../interfaces/common";
-import * as Module from "module";
 import {TrimModule} from "../classes/TrimModule";
 import {getLogger} from "log4js";
 
 const logger = getLogger('trim-service');
 
 export class TrimService {
-    public static trim(data: ISensorData): ISpiData {
+    public trim(data: ISensorData): ISpiData {
         if (!data || !data.modules) {
             throw new Error(`trim() => data was null`)
         }
@@ -19,11 +18,11 @@ export class TrimService {
 
         // Find highest module
         const highest = data.modules.reduce((prevModule, currentModule) => {
-            return (prevModule.sensorOutside > currentModule.sensorOutside) ? prevModule : currentModule
+            return (prevModule.sensorOutside < currentModule.sensorOutside) ? currentModule : prevModule
         })
         // Find highest module
         const lowest = data.modules.reduce((prevModule, currentModule) => {
-            return (prevModule.sensorOutside < currentModule.sensorOutside) ? prevModule : currentModule
+            return (prevModule.sensorOutside > currentModule.sensorOutside) ? currentModule : prevModule
         })
         // Get remaining module which must be equal or in the middle
         const middle = data.modules.filter(module => (module.sector !== highest.sector) && (module.sector !== lowest.sector))[0];
@@ -77,18 +76,24 @@ export class TrimService {
         }
 
 
-        // resize every pump speed to <= 100 / >= -100
-        if (trimModules.findIndex(module => Math.abs(module.pumpLevel) > 100)) {
-            // find biggest pump speed
-            const biggestPumpSpeedFromZero = trimModules.reduce((prevModule, currentModule) => {
-                    return (Math.abs(prevModule.pumpLevel) < Math.abs(currentModule.sensorOutside)) ? prevModule : currentModule
-            }).pumpLevel
+        // find biggest pump speed
+        const biggestPumpSpeedFromZero = trimModules.reduce((prevModule, currentModule) => {
+            return (Math.abs(prevModule.pumpLevel) > Math.abs(currentModule.sensorOutside)) ? prevModule : currentModule
+        })
 
+        // check if biggestpumspeed is over 100% or less then -100%
+        if (Math.abs(biggestPumpSpeedFromZero.pumpLevel) > 100) {
             // Resize every pump speed value to max 100
             trimModules.forEach(module => {
-                module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero) * 100)
+                module.pumpLevel = Math.round((module.pumpLevel / biggestPumpSpeedFromZero.pumpLevel) * 100)
+
+                // -0 was showing up in debugger so for safety reason i wrote this
+                if (module.pumpLevel === -0) {
+                    module.pumpLevel = 0;
+                }
             })
         }
+        logger.debug(JSON.stringify(trimModules));
 
         //TODO: Insert windmill speed here
         return [
@@ -114,3 +119,4 @@ export class TrimService {
         }
     }
 }
+export const trimService = new TrimService();

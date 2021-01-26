@@ -30,7 +30,7 @@
     "mainServiceConf": {
         "arduinoDelay": 1000
     },
-    "trimConfig": {
+    "sensorConfig": {
         "minimumDifference": 3,
         "fullSpeedMargin": 20,
         "outerBounds": {

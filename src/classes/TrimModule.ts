@@ -10,13 +10,16 @@ export class TrimModule implements IModule {
     sensorInside: number;
     sensorOutside: number;
 
+    // For debugging
     hasOverflow = false;
+    averageAim: number = 0;
 
     constructor(module: IModule) {
         this.pumpLevel = module.pumpLevel;
         this.sector = module.sector;
         this.sensorInside = module.sensorInside;
         this.sensorOutside = module.sensorOutside;
+        this.checkForOverflows();
     }
 
     public checkForOverflows() {
@@ -66,20 +69,22 @@ export class TrimModule implements IModule {
     }
 
     private calculatePumpSpeed(average: number): number {
+        this.averageAim = average;
         const difference = average - this.sensorOutside;
+        const fullSpeedMargin = config.sensorConfig.fullSpeedMargin;
         if (difference < 0 ) {
             // Stadt soll runter => negativer Pumpspeed
-            if (difference > config.sensorConfig.fullSpeedMargin * -1) {
+            if (difference < fullSpeedMargin * -1) {
                 return -100;
             } else {
-                return ((difference / config.sensorConfig.fullSpeedMargin) * 100)
+                return ((difference / fullSpeedMargin) * 100)
             }
         } else if (difference > 0) {
             // Stadt soll rauf => positiver Pumpspeed
-            if (difference > config.sensorConfig.fullSpeedMargin) {
+            if (difference > fullSpeedMargin) {
                 return 100;
             } else {
-                return ((difference / config.sensorConfig.fullSpeedMargin) * 100)
+                return ((difference / fullSpeedMargin) * 100)
             }
         } else {
             return 0;
