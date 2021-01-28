@@ -7,23 +7,24 @@ import {
 
 class StateStore {
     public SimDataSubject: BehaviorSubject<ISocketSimulationData>;
+
     public ModulesSubject: BehaviorSubject<ISensorData>;
 
     private _initialModules: [IModule, IModule, IModule] = [
         {
-            sector: 'One',
+            sector: `One`,
             sensorOutside: 0,
             sensorInside: 0,
             pumpLevel: 0,
         },
         {
-            sector: 'Two',
+            sector: `Two`,
             sensorOutside: 0,
             sensorInside: 0,
             pumpLevel: 0,
         },
         {
-            sector: 'Three',
+            sector: `Three`,
             sensorOutside: 0,
             sensorInside: 0,
             pumpLevel: 0,

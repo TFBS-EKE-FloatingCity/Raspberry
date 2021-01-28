@@ -1,17 +1,21 @@
-import {IModule} from "../interfaces/socket-payload";
-import {Sector} from "../interfaces/common";
-import {config} from "../config";
+import { IModule } from "../interfaces/socket-payload";
+import { Sector } from "../interfaces/common";
+import { config } from "../config";
 
 const overflowMargin = 3;
 
 export class TrimModule implements IModule {
     pumpLevel: number;
+
     sector: Sector;
+
     sensorInside: number;
+
     sensorOutside: number;
 
     // For debugging
     hasOverflow = false;
+
     averageAim: number = 0;
 
     constructor(module: IModule) {
@@ -39,16 +43,19 @@ export class TrimModule implements IModule {
     }
 
     public hasInnerMinOverflow(): boolean {
-        return this.sensorInside <= config.sensorConfig.innerBounds.min + overflowMargin
+        return this.sensorInside <= config.sensorConfig.innerBounds.min + overflowMargin;
     }
+
     public hasInnerMaxOverflow(): boolean {
-        return this.sensorInside >= config.sensorConfig.innerBounds.max - overflowMargin
+        return this.sensorInside >= config.sensorConfig.innerBounds.max - overflowMargin;
     }
+
     public hasOuterMinOverflow(): boolean {
-        return this.sensorOutside <= config.sensorConfig.outerBounds.min + overflowMargin
+        return this.sensorOutside <= config.sensorConfig.outerBounds.min + overflowMargin;
     }
+
     public hasOuterMaxOverflow(): boolean {
-        return this.sensorOutside >= config.sensorConfig.outerBounds.max - overflowMargin
+        return this.sensorOutside >= config.sensorConfig.outerBounds.max - overflowMargin;
     }
 
     public setPumpSpeed(average: number, energyBalance: number, additionalPumpSpeed: number = 0): number {
@@ -71,29 +78,26 @@ export class TrimModule implements IModule {
     private calculatePumpSpeed(average: number): number {
         this.averageAim = average;
         const difference = average - this.sensorOutside;
-        const fullSpeedMargin = config.sensorConfig.fullSpeedMargin;
-        const minimumMargin = config.sensorConfig.minimumMargin;
+        const { fullSpeedMargin } = config.sensorConfig;
+        const { minimumMargin } = config.sensorConfig;
 
         if (Math.abs(difference) <= minimumMargin) {
             return 0;
         }
 
-        if (difference < 0 ) {
+        if (difference < 0) {
             // Stadt soll runter => negativer Pumpspeed
             if (difference < fullSpeedMargin * -1) {
                 return -100;
-            } else {
-                return ((difference / fullSpeedMargin) * 100)
             }
-        } else if (difference > 0) {
+            return ((difference / fullSpeedMargin) * 100);
+        } if (difference > 0) {
             // Stadt soll rauf => positiver Pumpspeed
             if (difference > fullSpeedMargin) {
                 return 100;
-            } else {
-                return ((difference / fullSpeedMargin) * 100)
             }
-        } else {
-            return 0;
+            return ((difference / fullSpeedMargin) * 100);
         }
+        return 0;
     }
 }

@@ -1,7 +1,7 @@
 import { SpiDevice } from 'spi-device';
-import { DeviceName } from './common';
-import {Sector} from "./common";
-import {IDeviceConfig} from "../config";
+import { DeviceName, Sector } from './common';
+
+import { IDeviceConfig } from "../config";
 
 export interface ISPIConfig {
     devices: IDeviceConfig[];

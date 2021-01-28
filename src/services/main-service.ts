@@ -8,9 +8,9 @@ import { ISpiData } from '../interfaces/spi-service';
 import { TrimService } from './trim-service';
 import Store from '../store/Store';
 
-//TODO Send LED commands
+// TODO Send LED commands
 
-const logger = getLogger('main-service');
+const logger = getLogger(`main-service`);
 
 export class MainService {
     private spiService: SpiService;
@@ -18,6 +18,7 @@ export class MainService {
     private socketService: SocketService;
 
     private trimService: TrimService;
+
     /**
      * constructor
      */
@@ -28,7 +29,9 @@ export class MainService {
 
         // subscribe the socket service to the modules subject
         Store.ModulesSubject.subscribe(
-            async (data) => await this.socketService.sendSensorData(data)
+            async (data) => {
+                await this.socketService.sendSensorData(data);
+            },
         );
     }
 
@@ -54,12 +57,12 @@ export class MainService {
      * retrieves the sensor data of all slaves
      */
     public sendCommandAndReadSensorData(
-        spiData: ISpiData
+        spiData: ISpiData,
     ): [IModule, IModule, IModule] {
         const modules = this.spiService.Devices.reduce<IModule[]>(
             (acc, curr) => {
                 // skip the Ambient LEDs Controller
-                if (curr.name === 'Ambient') {
+                if (curr.name === `Ambient`) {
                     return acc;
                 }
 
@@ -67,7 +70,7 @@ export class MainService {
 
                 if (!data) {
                     logger.error(
-                        `couldn't retrieve Spi Data for sector ${curr.name}`
+                        `couldn't retrieve Spi Data for sector ${curr.name}`,
                     );
                     return acc;
                 }
@@ -86,7 +89,7 @@ export class MainService {
                         0,
                         0,
                         0,
-                    ])
+                    ]),
                 );
 
                 // send message
@@ -98,7 +101,7 @@ export class MainService {
                  */
                 if (msg[0].receiveBuffer) {
                     logger.info(
-                        `successfully received data from sector ${curr.name}!`
+                        `successfully received data from sector ${curr.name}!`,
                     );
 
                     // TODO check if & works
@@ -106,19 +109,19 @@ export class MainService {
                         sector: curr.name as Sector,
                         sensorInside: msg[0].receiveBuffer.readUInt16BE(0),
                         sensorOutside: msg[0].receiveBuffer.readUInt16BE(2),
-                        pumpLevel: (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100
+                        pumpLevel: (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100,
                     };
 
                     acc.push(module);
                 } else {
                     logger.error(
-                        `couldn't read the sensor data of sector ${curr.name}`
+                        `couldn't read the sensor data of sector ${curr.name}`,
                     );
                 }
 
                 return acc;
             },
-            []
+            [],
         );
 
         return modules as [IModule, IModule, IModule];
