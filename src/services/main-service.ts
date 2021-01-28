@@ -103,10 +103,10 @@ export class MainService {
                     const module: IModule = {
                         sector: curr.name as Sector,
                         sensorInside:
-                            msg[0].receiveBuffer.readInt16BE(0),
+                            msg[0].receiveBuffer.readUInt16BE(0),
                         sensorOutside:
-                            msg[0].receiveBuffer.readInt16BE(2),
-                        pumpLevel: (msg[0].receiveBuffer.readInt8(4) ?? 100) - 100
+                            msg[0].receiveBuffer.readUInt16BE(2),
+                        pumpLevel: (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100
                     };
 
                     acc.push(module);
