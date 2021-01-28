@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { getLogger } from 'log4js';
 import spi, { SpiDevice, SpiMessage } from 'spi-device';
 import { IDeviceConfig, config, ISpiServiceConfig } from '../config';
@@ -23,9 +24,10 @@ export class SpiService {
 
     private conf: ISpiServiceConfig;
 
-    constructor(config: ISpiServiceConfig) {
-        this.conf = config;
-        for (const controller of [...config.mcDevices, config.ambientDevice]) {
+    constructor(configParam: ISpiServiceConfig) {
+        this.conf = configParam;
+        // eslint-disable-next-line no-restricted-syntax
+        for (const controller of [...configParam.mcDevices, configParam.ambientDevice]) {
             this.Devices.push(new Device(controller));
         }
     }
@@ -41,20 +43,22 @@ export class SpiService {
     transfer = (
         message: SpiMessage,
         deviceName: DeviceName,
-        onReceiveCb: (message: SpiMessage) => void,
+        // eslint-disable-next-line no-unused-vars
+        onReceiveCb: (receiveMessage: SpiMessage) => void,
     ) => {
         const device: Device | undefined = this.Devices.find(
-            (device) => (device.name = deviceName),
+            // eslint-disable-next-line no-param-reassign,no-return-assign
+            (deviceEntry) => (deviceEntry.name = deviceName),
         );
 
         if (!device) {
             throw new Error(`the device ${deviceName} was not found`);
         }
-        device.spiDevice.transfer(message, (err, message) => {
+        device.spiDevice.transfer(message, (err, receiveMessage) => {
             if (err) {
                 logger.error(err);
             }
-            onReceiveCb(message);
+            onReceiveCb(receiveMessage);
         });
     };
 

@@ -10,7 +10,7 @@ class StateStore {
 
     public ModulesSubject: BehaviorSubject<ISensorData>;
 
-    private _initialModules: [IModule, IModule, IModule] = [
+    private initialModules: [IModule, IModule, IModule] = [
         {
             sector: `One`,
             sensorOutside: 0,
@@ -40,7 +40,7 @@ class StateStore {
 
         this.ModulesSubject = new BehaviorSubject({
             timestamp: Date.now(),
-            modules: this._initialModules,
+            modules: this.initialModules,
         });
     }
 }
