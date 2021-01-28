@@ -29,7 +29,9 @@ export class MainService {
         this.trimService = new TrimService();
 
         // subscribe the socket service to the modules subject
-        Store.ModulesSubject.subscribe(this.socketService.sendSensorData);
+        Store.ModulesSubject.subscribe(
+            async (data) => await this.socketService.sendSensorData(data)
+        );
     }
 
     /**
@@ -103,18 +105,16 @@ export class MainService {
                     // TODO check if & works
                     const module: IModule = {
                         sector: curr.name as Sector,
-                        sensorInside:
-                            msg[0].receiveBuffer.readUInt16BE(0),
-                        sensorOutside:
-                            msg[0].receiveBuffer.readUInt16BE(2),
-                        pumpLevel: (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100
+                        sensorInside: msg[0].receiveBuffer.readUInt16BE(0),
+                        sensorOutside: msg[0].receiveBuffer.readUInt16BE(2),
+                        pumpLevel:
+                            (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100,
                     };
 
-
-
                     //TODO: Remove me (Testing)
-                    testReturnValue = Math.abs((((module.sensorInside - 30)/ 85) - 1) * 100) * -1
-
+                    testReturnValue =
+                        Math.abs(((module.sensorInside - 30) / 85 - 1) * 100) *
+                        -1;
 
                     acc.push(module);
                 } else {
