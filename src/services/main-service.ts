@@ -71,15 +71,16 @@ export class MainService {
                     );
                     return acc;
                 }
+                // TODO Remove Test
+                data.pumpSpeed = testReturnValue;
 
                 // We want to use unsigned int so we bump up percentage span to 0 - 200
                 if (data.pumpSpeed) {
                     data.pumpSpeed += 100;
                 }
-                // TODO Remove Test
                 const msg: SpiMessage = this.spiService.createSpiMessage(
                     Buffer.from([
-                        testReturnValue,
+                        data?.pumpSpeed,
                         data?.windmillSpeed,
                         0,
                         0,
@@ -87,16 +88,6 @@ export class MainService {
                         0,
                     ])
                 );
-                // const msg: SpiMessage = this.spiService.createSpiMessage(
-                //     Buffer.from([
-                //         data?.pumpSpeed,
-                //         data?.windmillSpeed,
-                //         0,
-                //         0,
-                //         0,
-                //         0,
-                //     ])
-                // );
                 // send message
                 curr.spiDevice.transferSync(msg);
 
