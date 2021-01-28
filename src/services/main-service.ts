@@ -113,7 +113,7 @@ export class MainService {
 
                     //TODO: Remove me (Testing)
                     testReturnValue =
-                        Math.abs(((module.sensorInside - 30) / 85 - 1) * 100) *
+                        Math.round(((module.sensorInside - 30) / 85 - 1) * 100) *
                         -1;
 
                     acc.push(module);
