@@ -4,7 +4,6 @@ import { DeviceName } from './interfaces/common';
 const logger = getLogger('config');
 
 export interface IFloatingCityConfig {
-    endpoint: string;
     spiServiceConfig: ISpiServiceConfig;
     mainServiceConf: IMainServiceConf;
     sensorConfig: ISensorConfig;
