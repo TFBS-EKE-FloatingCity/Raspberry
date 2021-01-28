@@ -74,8 +74,12 @@ export class MainService {
                     return acc;
                 }
                 // TODO Remove Test
-                data.pumpSpeed = testReturnValue;
+                if(curr.name === "One") {
+                    data.pumpSpeed = testReturnValue;
+                }
+                console.log(data.pumpSpeed);
 
+                
                 // We want to use unsigned int so we bump up percentage span to 0 - 200
                 if (data.pumpSpeed) {
                     data.pumpSpeed += 100;
@@ -112,10 +116,13 @@ export class MainService {
                     };
 
                     //TODO: Remove me (Testing)
-                    testReturnValue =
-                        Math.abs(((module.sensorInside - 30) / 85 - 1) * 100) *
-                        -1;
 
+                    if(curr.name === "One" ) {
+                    testReturnValue =
+                            Math.abs(((module.sensorInside - 30) / 85 - 1) * 100) *
+                            -1;
+                    } 
+                    
                     acc.push(module);
                 } else {
                     logger.error(
