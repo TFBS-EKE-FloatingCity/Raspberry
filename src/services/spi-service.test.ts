@@ -1,5 +1,5 @@
 
-it('Test 1. Test how buffer method will read input', () => {
+it('Playground for Buffer reading', () => {
 
     // 1111 1111 0100 1100
     // FF4C
