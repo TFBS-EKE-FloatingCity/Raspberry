@@ -13,7 +13,7 @@ export class SocketService {
     // @ts-ignore
     socketIOServer: SocketIOServer;
 
-    connections: IWebsocketConnection[] = [];
+    protected connections: IWebsocketConnection[] = [];
 
     public start(server: HttpServer) {
         logger.info(`start socket.io server`)
@@ -36,7 +36,6 @@ export class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
-        setInterval(() => this.sendTestData(), 5000);
     }
 
 
