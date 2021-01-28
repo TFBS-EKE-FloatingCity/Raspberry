@@ -9,16 +9,6 @@
                 "name": "One",
                 "bus": 1,
                 "gpio": 0
-            },
-            {
-                "name": "Two",
-                "bus": 1,
-                "gpio": 1
-            },
-            {
-                "name": "Three",
-                "bus": 1,
-                "gpio": 2
             }
         ],
         "ambientDevice": {

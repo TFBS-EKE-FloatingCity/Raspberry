@@ -12,6 +12,8 @@ import Store from '../store/Store';
 
 const logger = getLogger('main-service');
 
+let testReturnValue = 0;
+
 export class MainService {
     private spiService: SpiService;
 
@@ -68,11 +70,10 @@ export class MainService {
                         `couldn't retrieve Spi Data for sector ${curr.name}`
                     );
                 }
-
-                // TODO test
+                // TODO Remove Test
                 const msg: SpiMessage = this.spiService.createSpiMessage(
                     Buffer.from([
-                        data?.pumpSpeed,
+                        testReturnValue,
                         data?.windmillSpeed,
                         0,
                         0,
@@ -80,7 +81,16 @@ export class MainService {
                         0,
                     ])
                 );
-
+                // const msg: SpiMessage = this.spiService.createSpiMessage(
+                //     Buffer.from([
+                //         data?.pumpSpeed,
+                //         data?.windmillSpeed,
+                //         0,
+                //         0,
+                //         0,
+                //         0,
+                //     ])
+                // );
                 // send message
                 curr.spiDevice.transferSync(msg);
 
@@ -102,6 +112,12 @@ export class MainService {
                             msg[0].receiveBuffer.readInt16BE(2),
                         pumpLevel: msg[0].receiveBuffer.readInt8(4) ?? 0
                     };
+
+
+
+                    //TODO: Remove me (Testing)
+                    testReturnValue = Math.abs((((module.sensorInside - 30)/ 85) - 1) * 100) * -1
+
 
                     acc.push(module);
                 } else {
