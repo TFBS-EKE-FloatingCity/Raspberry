@@ -176,5 +176,5 @@ it('Test 5. Energybalance Overflow', () => {
     expect(data[1].pumpSpeed).toBe(100);
     expect(data[2].pumpSpeed).toBe(100);
     console.log(JSON.stringify(data));
-    console.log("Test 4. finished")
+    console.log("Test 5. finished")
 });
