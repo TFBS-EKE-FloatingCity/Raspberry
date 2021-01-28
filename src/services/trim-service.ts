@@ -30,10 +30,6 @@ export class TrimService {
         // Get remaining module which must be equal or in the middle
         const middle = data.modules.filter(module => (module.sector !== highest.sector) && (module.sector !== lowest.sector))[0];
 
-        // If under margin => do nothing
-        if ((highest.sensorOutside - lowest.sensorOutside) <= minimumMargin) {
-            return TrimService.getNeutralSpiModuleData();
-        }
 
         const average = (highest.sensorOutside + middle.sensorOutside + lowest.sensorOutside) / 3;
 
@@ -63,14 +59,13 @@ export class TrimService {
             overFlowSpeed = 0;
             for (let innerIndex of iterations[outerIndex]) {
 
-                // Maybe disable energy balance if overflow
-                // if (iterations.length > 1) {
-                //     overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, 0, (iterationOverflow / (iterations[outerIndex].length)) * -1);
-                // } else {
-                //     overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
-                // }
+                if (iterations.length > 1) {
+                    overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, 0, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                } else {
+                    overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                }
 
-                overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
+                // overFlowSpeed = trimModules[innerIndex].setPumpSpeed(average, data.energyBalance, (iterationOverflow / (iterations[outerIndex].length)) * -1);
 
                 // Was this a overflow?
                 if (overFlowSpeed !== 0) {

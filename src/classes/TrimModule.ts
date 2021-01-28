@@ -53,18 +53,18 @@ export class TrimModule implements IModule {
 
     public setPumpSpeed(average: number, energyBalance: number, additionalPumpSpeed: number = 0): number {
         const calculatedPumpSpeed = this.calculatePumpSpeed(average);
-        if (calculatedPumpSpeed < 0) {
+        if (Math.round(calculatedPumpSpeed + additionalPumpSpeed + energyBalance) < 0) {
             if (this.hasInnerMinOverflow() || this.hasOuterMinOverflow()) {
                 this.pumpLevel = 0;
                 return calculatedPumpSpeed + additionalPumpSpeed;
             }
-        } else if (calculatedPumpSpeed > 0) {
+        } else if (Math.round(calculatedPumpSpeed + additionalPumpSpeed + energyBalance) > 0) {
             if (this.hasInnerMaxOverflow() || this.hasOuterMaxOverflow()) {
                 this.pumpLevel = 0;
                 return calculatedPumpSpeed + additionalPumpSpeed;
             }
         }
-        this.pumpLevel = calculatedPumpSpeed + additionalPumpSpeed + energyBalance;
+        this.pumpLevel = Math.round(calculatedPumpSpeed + additionalPumpSpeed + energyBalance);
         return 0;
     }
 
@@ -72,6 +72,12 @@ export class TrimModule implements IModule {
         this.averageAim = average;
         const difference = average - this.sensorOutside;
         const fullSpeedMargin = config.sensorConfig.fullSpeedMargin;
+        const minimumMargin = config.sensorConfig.minimumMargin;
+
+        if (Math.abs(difference) <= minimumMargin) {
+            return 0;
+        }
+
         if (difference < 0 ) {
             // Stadt soll runter => negativer Pumpspeed
             if (difference < fullSpeedMargin * -1) {
