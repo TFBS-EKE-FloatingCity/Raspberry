@@ -97,13 +97,10 @@ export class MainService {
                     const module: IModule = {
                         sector: curr.name as Sector,
                         sensorInside:
-                            msg[0].receiveBuffer.readInt8(0) &
-                            msg[0].receiveBuffer.readInt8(1),
+                            msg[0].receiveBuffer.readInt16BE(0),
                         sensorOutside:
-                            msg[0].receiveBuffer.readInt8(2) &
-                            msg[0].receiveBuffer.readInt8(3),
-                        pumpLevel: msg[0].receiveBuffer.readInt8(4) ?? 0,
-                        // windMill: msg[0].receiveBuffer.readInt8(5) ?? 0,
+                            msg[0].receiveBuffer.readInt16BE(2),
+                        pumpLevel: msg[0].receiveBuffer.readInt8(4) ?? 0
                     };
 
                     acc.push(module);
