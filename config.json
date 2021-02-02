@@ -23,7 +23,8 @@
             "name": "Ambient",
             "bus": 0,
             "gpio": 0
-        }
+        },
+        "fakeSpiMode": true
     },
     "mainServiceConf": {
         "arduinoDelay": 1000
