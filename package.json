@@ -1,15 +1,43 @@
 {
-  "name": "raspi",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "pi-spi": "^1.2.1",
-    "request": "^2.88.2"
-  }
+    "name": "raspi",
+    "version": "1.0.0",
+    "license": "MIT",
+    "scripts": {
+        "start": "ts-node -r ./src/index.ts",
+        "format": "eslint --ext .ts --fix ./src",
+        "lint": "eslint --ext .ts ./src",
+        "test": "jest --watchAll"
+    },
+    "dependencies": {
+        "body-parser": "1.19.0",
+        "compression": "^1.7.4",
+        "express": "4.17.1",
+        "helmet": "^4.2.0",
+        "http-status": "^1.5.0",
+        "log4js": "^6.3.0",
+        "rxjs": "^6.6.3",
+        "socket.io": "^2.3.0",
+        "spi-device": "^3.1.0",
+        "uuid": "^8.3.1"
+    },
+    "devDependencies": {
+        "@types/body-parser": "^1.19.0",
+        "@types/compression": "^1.7.0",
+        "@types/eslint": "^7.2.5",
+        "@types/express": "^4.17.9",
+        "@types/http-status": "^1.1.2",
+        "@types/jest": "^26.0.20",
+        "@types/socket.io": "^2.1.11",
+        "@types/uuid": "^8.3.0",
+        "@typescript-eslint/eslint-plugin": "^4.8.1",
+        "eslint": "^7.14.0",
+        "eslint-config-airbnb-typescript": "^12.0.0",
+        "eslint-import-resolver-typescript": "^2.3.0",
+        "eslint-plugin-import": "^2.22.1",
+        "jest": "^26.6.3",
+        "prettier": "^2.2.0",
+        "ts-jest": "^26.4.4",
+        "ts-node": "^9.0.0",
+        "typescript": "4.1.2"
+    }
 }
