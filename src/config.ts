@@ -21,6 +21,7 @@ export interface ISpiServiceConfig {
     speedHz: number;
     mcDevices: [IDeviceConfig, IDeviceConfig, IDeviceConfig];
     ambientDevice: IDeviceConfig;
+    fakeSpiMode: boolean;
 }
 export interface IMinMax {
     min: number;

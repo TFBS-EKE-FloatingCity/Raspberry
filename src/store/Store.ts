@@ -4,6 +4,7 @@ import {
     ISensorData,
     ISocketSimulationData,
 } from '../interfaces/socket-payload';
+import { config } from "../config";
 
 class StateStore {
     public SimDataSubject: BehaviorSubject<ISocketSimulationData>;
@@ -13,20 +14,20 @@ class StateStore {
     private initialModules: [IModule, IModule, IModule] = [
         {
             sector: `One`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
+            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
             pumpLevel: 0,
         },
         {
             sector: `Two`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
+            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
             pumpLevel: 0,
         },
         {
             sector: `Three`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
+            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
             pumpLevel: 0,
         },
     ];

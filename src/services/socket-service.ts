@@ -36,7 +36,6 @@ export class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
-        // setInterval(() => this.sendTestData(), 5000);
     }
 
     public async sendSensorData(data: ISensorData) {
@@ -90,43 +89,6 @@ export class SocketService {
             logger.error(`Connections was undefined`);
         }
     }
-
-    // Use this if you want to send test data
-
-    // private sendTestData() {
-    //     const moduleOne: IModule = {
-    //         sector: `One`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //     const moduleTwo: IModule = {
-    //         sector: `Two`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //     const moduleThree: IModule = {
-    //         sector: `Three`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //
-    //     const sensorData: ISensorData = {
-    //         timestamp: Date.now(),
-    //         modules: [moduleOne, moduleTwo, moduleThree],
-    //     };
-    //     this.sendSensorData(sensorData);
-    // }
-    //
-    // private getRandomInt(min: number, max: number) {
-    //     // eslint-disable-next-line no-param-reassign
-    //     min = Math.ceil(min);
-    //     // eslint-disable-next-line no-param-reassign
-    //     max = Math.floor(max);
-    //     return Math.round(Math.floor(Math.random() * (max - min)) + min);
-    // }
 }
 
 export const socketService = new SocketService();
