@@ -8,8 +8,6 @@ import { ISpiData } from '../interfaces/spi-service';
 import { TrimService } from './trim-service';
 import Store from '../store/Store';
 
-// TODO Send LED commands
-
 const logger = getLogger(`main-service`);
 
 export class MainService {
@@ -28,11 +26,35 @@ export class MainService {
         this.trimService = new TrimService();
 
         // subscribe the socket service to the modules subject
-        Store.ModulesSubject.subscribe(
-            async (data) => {
-                await this.socketService.sendSensorData(data);
-            },
-        );
+        Store.ModulesSubject.subscribe(async (data) => {
+            await this.socketService.sendSensorData(data);
+        });
+
+        // subscribe the ambient device to the simulation subject
+        Store.SimDataSubject.subscribe((data) => {
+            const ambientDevice = this.spiService.Devices.find(
+                (d) => d.name === 'Ambient'
+            );
+
+            // send six bytes, where only the first byte has real data (sun data from the simulation)
+            const message = this.spiService.createSpiMessage(
+                Buffer.from([data.sun, 0, 0, 0, 0, 0])
+            );
+
+            if (!ambientDevice) {
+                logger.error('the ambient device was not found!');
+
+                return;
+            }
+
+            ambientDevice?.spiDevice.transferSync(message);
+
+            if (message[0].receiveBuffer) {
+                logger.info(
+                    `successfully sent the sun simulation data to ambient device!`
+                );
+            }
+        });
     }
 
     /**
@@ -57,7 +79,7 @@ export class MainService {
      * retrieves the sensor data of all slaves
      */
     public sendCommandAndReadSensorData(
-        spiData: ISpiData,
+        spiData: ISpiData
     ): [IModule, IModule, IModule] {
         const modules = this.spiService.Devices.reduce<IModule[]>(
             (acc, curr) => {
@@ -70,7 +92,7 @@ export class MainService {
 
                 if (!data) {
                     logger.error(
-                        `couldn't retrieve Spi Data for sector ${curr.name}`,
+                        `couldn't retrieve Spi Data for sector ${curr.name}`
                     );
                     return acc;
                 }
@@ -89,7 +111,7 @@ export class MainService {
                         0,
                         0,
                         0,
-                    ]),
+                    ])
                 );
 
                 // send message
@@ -101,7 +123,7 @@ export class MainService {
                  */
                 if (msg[0].receiveBuffer) {
                     logger.info(
-                        `successfully received data from sector ${curr.name}!`,
+                        `successfully received data from sector ${curr.name}!`
                     );
 
                     // TODO check if & works
@@ -109,19 +131,20 @@ export class MainService {
                         sector: curr.name as Sector,
                         sensorInside: msg[0].receiveBuffer.readUInt16BE(0),
                         sensorOutside: msg[0].receiveBuffer.readUInt16BE(2),
-                        pumpLevel: (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100,
+                        pumpLevel:
+                            (msg[0].receiveBuffer.readUInt8(4) ?? 100) - 100,
                     };
 
                     acc.push(module);
                 } else {
                     logger.error(
-                        `couldn't read the sensor data of sector ${curr.name}`,
+                        `couldn't read the sensor data of sector ${curr.name}`
                     );
                 }
 
                 return acc;
             },
-            [],
+            []
         );
 
         return modules as [IModule, IModule, IModule];
