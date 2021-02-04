@@ -29,7 +29,7 @@ export class MainService {
 
         // subscribe the socket service to the modules subject
         Store.ModulesSubject.subscribe(async (data) => {
-            await this.socketService.sendSensorData(this.roundAllData(data));
+            await this.socketService.sendSensorData(this.roundAllData({ ...data}));
         });
 
         // subscribe the ambient device to the simulation subject
