@@ -27,7 +27,8 @@
         "fakeSpiMode": false
     },
     "socketServerConfig": {
-        "maxMessagesInQueue": 10
+        "maxMessagesInQueue": 10,
+        "simulationTimeout": 5000
     },
     "mainServiceConf": {
         "arduinoDelay": 1000

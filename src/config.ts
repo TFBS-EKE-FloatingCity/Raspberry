@@ -17,6 +17,7 @@ export interface IMainServiceConf {
 export interface ISocketServerConfig {
     /** max number of messages in queue for client */
     maxMessagesInQueue: number;
+    simulationTimeout: number;
 }
 
 export interface ISpiServiceConfig {

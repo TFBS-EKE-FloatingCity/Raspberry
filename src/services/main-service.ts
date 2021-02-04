@@ -67,7 +67,7 @@ export class MainService {
      */
     public async StartApp() {
         // Check for timeout of Simulation
-        if (Store.SimDataSubject.value.timestamp < new Date(new Date().getTime() - 5000).getTime()) {
+        if (Store.SimDataSubject.value.timestamp < new Date(new Date().getTime() - config.socketServerConfig.simulationTimeout).getTime()) {
             Store.SimDataSubject.next({
                 timestamp: new Date().getTime(),
                 sun: 0,

@@ -34,6 +34,7 @@ export class StateStore {
 
     constructor() {
         this.SimDataSubject = new BehaviorSubject({
+            timestamp: new Date().getTime() - config.socketServerConfig.simulationTimeout,
             sun: 0,
             wind: 0,
             energyBalance: 0,
