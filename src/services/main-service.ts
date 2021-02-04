@@ -1,7 +1,7 @@
 import { getLogger } from 'log4js';
 import { SpiMessage } from 'spi-device';
 import { Sector } from '../interfaces/common';
-import { IModule } from '../interfaces/socket-payload';
+import {IModule, ISensorData} from '../interfaces/socket-payload';
 import { SocketService } from './socket-service';
 import { SpiService } from './spi-service';
 import { ISpiData } from '../interfaces/spi-service';
@@ -29,7 +29,7 @@ export class MainService {
 
         // subscribe the socket service to the modules subject
         Store.ModulesSubject.subscribe(async (data) => {
-            await this.socketService.sendSensorData(data);
+            await this.socketService.sendSensorData(this.roundAllData(data));
         });
 
         // subscribe the ambient device to the simulation subject
@@ -164,5 +164,14 @@ export class MainService {
         );
 
         return modules as [IModule, IModule, IModule];
+    }
+
+    private roundAllData(data: ISensorData) {
+        const sensorData = data;
+        sensorData.modules.forEach((module, index) => {
+            sensorData.modules[index].sensorOutside = Math.round(module.sensorOutside);
+            sensorData.modules[index].sensorInside = Math.round(module.sensorInside);
+        });
+        return sensorData;
     }
 }
