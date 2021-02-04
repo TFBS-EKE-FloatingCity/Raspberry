@@ -1,7 +1,9 @@
 import { IModule } from "../interfaces/socket-payload";
 import Store from "../store/Store";
 import { ISpiData } from "../interfaces/spi-service";
-import {SpiService} from "./spi-service";
+import {getLogger} from "log4js";
+
+const logger = getLogger(`fake-data-service`);
 
 export class FakeDataService {
     // Use this if you want to send test data
@@ -21,7 +23,8 @@ export class FakeDataService {
                     data.modules[index].sensorInside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
                 }
 
-                if (this.getOdds(20)) {
+                if (this.getOdds(15)) {
+                    logger.info(`Odds were good => upsetting modle ${data.modules[index].sector}`);
                     if (this.coinFlip()) {
                         data.modules[index].sensorOutside += 10;
                         data.modules[index].sensorInside += 10;
