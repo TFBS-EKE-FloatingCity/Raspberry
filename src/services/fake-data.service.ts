@@ -22,16 +22,15 @@ export class FakeDataService {
                     data.modules[index].sensorOutside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
                     data.modules[index].sensorInside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
                 }
-
-                if (this.getOdds(15)) {
-                    logger.info(`Odds were good => upsetting module: ${data.modules[index].sector}`);
-                    if (this.coinFlip()) {
-                        data.modules[index].sensorOutside += 10;
-                        data.modules[index].sensorInside += 10;
-                    } else {
-                        data.modules[index].sensorOutside -= 10;
-                        data.modules[index].sensorInside -= 10;
-                    }
+            }
+            if (this.getOdds(15)) {
+                logger.info(`Odds were good => upsetting module: ${data.modules[index].sector}`);
+                if (this.coinFlip()) {
+                    data.modules[index].sensorOutside += 10;
+                    data.modules[index].sensorInside += 10;
+                } else {
+                    data.modules[index].sensorOutside -= 10;
+                    data.modules[index].sensorInside -= 10;
                 }
             }
         });
