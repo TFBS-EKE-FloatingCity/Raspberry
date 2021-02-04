@@ -24,7 +24,7 @@ export class FakeDataService {
                 }
 
                 if (this.getOdds(15)) {
-                    logger.info(`Odds were good => upsetting modle ${data.modules[index].sector}`);
+                    logger.info(`Odds were good => upsetting module: ${data.modules[index].sector}`);
                     if (this.coinFlip()) {
                         data.modules[index].sensorOutside += 10;
                         data.modules[index].sensorInside += 10;
