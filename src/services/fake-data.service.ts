@@ -23,11 +23,11 @@ export class FakeDataService {
                 data.modules[index].pumpLevel = trimDataEntry.pumpSpeed;
 
                 if (trimDataEntry.pumpSpeed < 0) {
-                    data.modules[index].sensorOutside -= trimDataEntry.pumpSpeed < 50 ? 2 : 1;
-                    data.modules[index].sensorInside -= trimDataEntry.pumpSpeed < 50 ? 2 : 1;
+                    data.modules[index].sensorOutside += trimDataEntry.pumpSpeed < -10 ? trimDataEntry.pumpSpeed / 100 : -0.1;
+                    data.modules[index].sensorInside += trimDataEntry.pumpSpeed < -10 ? trimDataEntry.pumpSpeed / 100 : -0.1;
                 } else if (trimDataEntry.pumpSpeed > 0) {
-                    data.modules[index].sensorOutside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
-                    data.modules[index].sensorInside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
+                    data.modules[index].sensorOutside += trimDataEntry.pumpSpeed > 10 ? trimDataEntry.pumpSpeed / 100 : 0.1;
+                    data.modules[index].sensorInside += trimDataEntry.pumpSpeed > 10 ? trimDataEntry.pumpSpeed / 100 : 0.1;
                 }
             }
             if (this.getOdds(200)) {
