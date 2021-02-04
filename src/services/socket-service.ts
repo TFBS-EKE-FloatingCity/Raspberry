@@ -6,6 +6,7 @@ import { v4 as uuidGenerator } from 'uuid';
 import { IWebsocketConnection, IWebsocketMessage, IWebsocketResponse } from '../interfaces/socket-service';
 import { ISensorData } from "../interfaces/socket-payload";
 import Store from '../store/Store';
+import {config} from "../config";
 
 const logger = getLogger(`socket-service`);
 
@@ -52,12 +53,16 @@ export class SocketService {
                                 connection.messageQueue.splice(connection.messageQueue.findIndex((message) => message.uuid === responseData.uuid), 1);
 
                                 // write sim state into store
-                                Store.SimDataSubject.next({
-                                    sun: responseData.sun,
-                                    wind: responseData.wind,
-                                    energyBalance: responseData.energyBalance,
-                                });
+                                if (responseData.sun || responseData.wind || responseData.energyBalance) {
+                                    Store.SimDataSubject.next({
+                                        sun: responseData.sun,
+                                        wind: responseData.wind,
+                                        energyBalance: responseData.energyBalance,
+                                    });
+                                }
                                 logger.debug(JSON.stringify(responseData));
+                            } else {
+                                logger.warn(`message: ${responseData.uuid} from user: ${connection.uuid} was not ack`);
                             }
                             // remove event listeners if no messages are pending
                             if (connection.messageQueue.length === 0) {
@@ -71,6 +76,13 @@ export class SocketService {
                         uuid: uuidGenerator(),
                         payload: data,
                     };
+
+                    if (connection.messageQueue.length > config.socketServerConfig.maxMessagesInQueue) {
+                        const toDeleteMessageCount = connection.messageQueue.length - config.socketServerConfig.maxMessagesInQueue;
+                        connection.messageQueue.splice(0, toDeleteMessageCount);
+                        logger.warn(`message queue was over max messages for user ${connection.uuid} => deleted first ${toDeleteMessageCount} messages`);
+                    }
+
                     // push socket message to message queue
                     connection.messageQueue.push(socketMessage);
 

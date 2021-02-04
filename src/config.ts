@@ -14,6 +14,11 @@ export interface IMainServiceConf {
     arduinoDelay: number;
 }
 
+export interface ISocketServerConfig {
+    /** max number of messages in queue for client */
+    maxMessagesInQueue: number;
+}
+
 export interface ISpiServiceConfig {
     /** number of bytes to receive */
     byteLength: number;
@@ -34,6 +39,7 @@ export interface ISensorConfig {
     innerBounds: IMinMax;
 }
 export interface IFloatingCityConfig {
+    socketServerConfig: ISocketServerConfig;
     spiServiceConfig: ISpiServiceConfig;
     mainServiceConf: IMainServiceConf;
     sensorConfig: ISensorConfig;
