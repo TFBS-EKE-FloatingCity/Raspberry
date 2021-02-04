@@ -22,6 +22,9 @@ export class SocketService {
         this.socketIOServer.on(`connect`, (socket) => {
             const uuid = uuidGenerator();
             logger.info(`new client try's to connect`);
+            socket.error((err: any) => {
+                logger.error(JSON.stringify(err));
+            });
             socket.on(`authenticate`, () => {
                 // TODO: Authenticate ??
                 this.connections.push({
