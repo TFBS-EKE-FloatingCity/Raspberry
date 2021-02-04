@@ -31,7 +31,7 @@ const server = app.listen(app.get(`port`), () => {
 
 socketService.start(server);
 
-if (spiService) {
+if (spiService || config.spiServiceConfig.fakeSpiMode) {
     const mainService = new MainService(spiService, socketService);
 
     setInterval(
