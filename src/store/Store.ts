@@ -14,20 +14,20 @@ class StateStore {
     private initialModules: [IModule, IModule, IModule] = [
         {
             sector: `One`,
-            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
-            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
         {
             sector: `Two`,
-            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
-            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
         {
             sector: `Three`,
-            sensorOutside: (config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2,
-            sensorInside: (config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
     ];
