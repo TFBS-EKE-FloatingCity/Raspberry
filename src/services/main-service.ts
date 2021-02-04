@@ -66,6 +66,16 @@ export class MainService {
      * Entry Point
      */
     public async StartApp() {
+        // Check for timeout of Simulation
+        if (Store.SimDataSubject.value.timestamp < new Date(new Date().getTime() - 5000).getTime()) {
+            Store.SimDataSubject.next({
+                timestamp: new Date().getTime(),
+                sun: 0,
+                wind: 0,
+                energyBalance: 0,
+            });
+        }
+
         // trim data using current measurements
         const trimData = this.trimService.trim({
             ...Store.ModulesSubject.value,

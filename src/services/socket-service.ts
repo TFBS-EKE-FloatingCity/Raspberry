@@ -55,6 +55,7 @@ export class SocketService {
                                 // write sim state into store
                                 if (responseData.sun || responseData.wind || responseData.energyBalance) {
                                     Store.SimDataSubject.next({
+                                        timestamp: new Date().getTime(),
                                         sun: responseData.sun,
                                         wind: responseData.wind,
                                         energyBalance: responseData.energyBalance,
