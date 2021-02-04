@@ -1,14 +1,21 @@
+import { getLogger } from "log4js";
 import { IModule } from "../interfaces/socket-payload";
-import Store from "../store/Store";
+import Store, { StateStore } from "../store/Store";
 import { ISpiData } from "../interfaces/spi-service";
-import {getLogger} from "log4js";
 
 const logger = getLogger(`fake-data-service`);
 
 export class FakeDataService {
+    toResetTime: Date = new Date(1000);
     // Use this if you want to send test data
 
     public fakeSPICommunication(trimData: ISpiData): [IModule, IModule, IModule] {
+        if (this.toResetTime.getTime() < new Date().getTime()) {
+            this.toResetTime = new Date(new Date().getTime() + 600000);
+            logger.info(`Resetting Modules to initial => Happens every 10 minutes`);
+            return StateStore.initialModules;
+        }
+
         const data = Store.ModulesSubject.value;
         data.modules.forEach((module, index) => {
             const trimDataEntry = trimData.find((entry) => entry.sector === module.sector);
@@ -23,14 +30,14 @@ export class FakeDataService {
                     data.modules[index].sensorInside += trimDataEntry.pumpSpeed > 50 ? 2 : 1;
                 }
             }
-            if (this.getOdds(15)) {
+            if (this.getOdds(200)) {
                 logger.info(`Odds were good => upsetting module: ${data.modules[index].sector}`);
                 if (this.coinFlip()) {
-                    data.modules[index].sensorOutside += 10;
-                    data.modules[index].sensorInside += 10;
+                    data.modules[index].sensorOutside += 40;
+                    data.modules[index].sensorInside += 40;
                 } else {
-                    data.modules[index].sensorOutside -= 10;
-                    data.modules[index].sensorInside -= 10;
+                    data.modules[index].sensorOutside -= 40;
+                    data.modules[index].sensorInside -= 40;
                 }
             }
         });

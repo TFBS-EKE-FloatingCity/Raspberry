@@ -6,12 +6,12 @@ import {
 } from '../interfaces/socket-payload';
 import { config } from "../config";
 
-class StateStore {
+export class StateStore {
     public SimDataSubject: BehaviorSubject<ISocketSimulationData>;
 
     public ModulesSubject: BehaviorSubject<ISensorData>;
 
-    private initialModules: [IModule, IModule, IModule] = [
+    public static initialModules: [IModule, IModule, IModule] = [
         {
             sector: `One`,
             sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
@@ -41,7 +41,7 @@ class StateStore {
 
         this.ModulesSubject = new BehaviorSubject({
             timestamp: Date.now(),
-            modules: this.initialModules,
+            modules: StateStore.initialModules,
         });
     }
 }
