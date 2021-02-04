@@ -13,7 +13,7 @@ import {fakeDataService} from "./fake-data.service";
 const logger = getLogger(`main-service`);
 
 export class MainService {
-    private spiService: SpiService;
+    private spiService: SpiService | null;
 
     private socketService: SocketService;
 
@@ -22,7 +22,7 @@ export class MainService {
     /**
      * constructor
      */
-    constructor(spiService: SpiService, socketService: SocketService) {
+    constructor(spiService: SpiService | null, socketService: SocketService) {
         this.spiService = spiService;
         this.socketService = socketService;
         this.trimService = new TrimService();
@@ -34,6 +34,9 @@ export class MainService {
 
         // subscribe the ambient device to the simulation subject
         Store.SimDataSubject.subscribe((data) => {
+            // Let Program run if spi service is not start able
+            if (!this.spiService) return;
+
             const ambientDevice = this.spiService.Devices.find(
                 (d) => d.name === `Ambient`,
             );
@@ -72,6 +75,7 @@ export class MainService {
         // send the trimmed data to Arduinos
         // and write their current measurements into the store
         if (!config.spiServiceConfig.fakeSpiMode) {
+            if (!this.spiService) throw new Error(`sendingCommand with spiService = null => turn on fakeSpiMode or fix SpiService`);
             Store.ModulesSubject.next({
                 timestamp: Date.now(),
                 modules: this.sendCommandAndReadSensorData(trimData),
@@ -90,9 +94,12 @@ export class MainService {
     public sendCommandAndReadSensorData(
         spiData: ISpiData,
     ): [IModule, IModule, IModule] {
+        // Let Program run if spi service is not start able
+        if (!this.spiService) throw new Error(`sendingCommand with spiService = null => should not happen`);
         const modules = this.spiService.Devices.reduce<IModule[]>(
             (acc, curr) => {
                 // skip the Ambient LEDs Controller
+                if (!this.spiService) throw new Error(`sendingCommand with spiService = null => should not happen`);
                 if (curr.name === `Ambient`) {
                     return acc;
                 }

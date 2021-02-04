@@ -1,6 +1,7 @@
 import { IModule } from "../interfaces/socket-payload";
 import Store from "../store/Store";
 import { ISpiData } from "../interfaces/spi-service";
+import {SpiService} from "./spi-service";
 
 export class FakeDataService {
     // Use this if you want to send test data
