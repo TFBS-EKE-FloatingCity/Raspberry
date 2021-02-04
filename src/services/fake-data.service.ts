@@ -19,7 +19,7 @@ export class FakeDataService {
         const data = Store.ModulesSubject.value;
         data.modules.forEach((module, index) => {
             const trimDataEntry = trimData.find((entry) => entry.sector === module.sector);
-            if (trimDataEntry && trimDataEntry.pumpSpeed) {
+            if (trimDataEntry && trimDataEntry.pumpSpeed !== null) {
                 data.modules[index].pumpLevel = trimDataEntry.pumpSpeed;
 
                 if (trimDataEntry.pumpSpeed < 0) {

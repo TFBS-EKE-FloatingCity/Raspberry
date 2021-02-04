@@ -103,6 +103,37 @@ describe(`General testing`, () => {
         expect(data[1].pumpSpeed).toBe(0);
         expect(data[2].pumpSpeed).toBe(-25);
     });
+
+    it(`Test minimum margin`, () => {
+        const simData: ISocketSimulationData = {
+            sun: 0,
+            energyBalance: 0,
+            wind: 0,
+        };
+        const testSensorData: ISensorData = {
+            timestamp: new Date().getTime(),
+            modules: [{
+                sector: `One`,
+                sensorOutside: 138,
+                sensorInside: 138,
+                pumpLevel: 18,
+            }, {
+                sector: `Two`,
+                sensorOutside: 138,
+                sensorInside: 138,
+                pumpLevel: 18,
+            }, {
+                sector: `Three`,
+                sensorOutside: 141,
+                sensorInside: 141,
+                pumpLevel: -17,
+            }],
+        };
+        const data: ISpiData = trimService.trim({ ...testSensorData, ...simData });
+        expect(data[0].pumpSpeed).toBe(0);
+        expect(data[1].pumpSpeed).toBe(0);
+        expect(data[2].pumpSpeed).toBe(0);
+    });
 });
 
 describe(`Overflow testing`, () => {
