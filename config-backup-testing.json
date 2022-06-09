@@ -23,7 +23,12 @@
             "name": "Ambient",
             "bus": 0,
             "gpio": 0
-        }
+        },
+        "fakeSpiMode": false
+    },
+    "socketServerConfig": {
+        "maxMessagesInQueue": 10,
+        "simulationTimeout": 5000
     },
     "mainServiceConf": {
         "arduinoDelay": 1000

@@ -4,35 +4,37 @@ import {
     ISensorData,
     ISocketSimulationData,
 } from '../interfaces/socket-payload';
+import { config } from "../config";
 
-class StateStore {
+export class StateStore {
     public SimDataSubject: BehaviorSubject<ISocketSimulationData>;
 
     public ModulesSubject: BehaviorSubject<ISensorData>;
 
-    private initialModules: [IModule, IModule, IModule] = [
+    public static initialModules: [IModule, IModule, IModule] = [
         {
             sector: `One`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
         {
             sector: `Two`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
         {
             sector: `Three`,
-            sensorOutside: 0,
-            sensorInside: 0,
+            sensorOutside: config.sensorConfig.outerBounds.max - ((config.sensorConfig.outerBounds.max - config.sensorConfig.outerBounds.min) / 2),
+            sensorInside: config.sensorConfig.innerBounds.max - ((config.sensorConfig.innerBounds.max - config.sensorConfig.innerBounds.min) / 2),
             pumpLevel: 0,
         },
     ];
 
     constructor() {
         this.SimDataSubject = new BehaviorSubject({
+            timestamp: new Date().getTime() - config.socketServerConfig.simulationTimeout,
             sun: 0,
             wind: 0,
             energyBalance: 0,
@@ -40,7 +42,7 @@ class StateStore {
 
         this.ModulesSubject = new BehaviorSubject({
             timestamp: Date.now(),
-            modules: this.initialModules,
+            modules: StateStore.initialModules,
         });
     }
 }

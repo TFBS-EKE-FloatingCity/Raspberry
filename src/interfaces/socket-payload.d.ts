@@ -20,6 +20,7 @@ export interface ISensorData {
 }
 
 export interface ISocketSimulationData {
+    timestamp: number;
     // 0% - 100%
     sun: number;
 

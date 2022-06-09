@@ -1,17 +1,19 @@
 import { getLogger } from 'log4js';
 import { SpiMessage } from 'spi-device';
 import { Sector } from '../interfaces/common';
-import { IModule } from '../interfaces/socket-payload';
+import {IModule, ISensorData} from '../interfaces/socket-payload';
 import { SocketService } from './socket-service';
 import { SpiService } from './spi-service';
 import { ISpiData } from '../interfaces/spi-service';
 import { TrimService } from './trim-service';
 import Store from '../store/Store';
+import {config} from "../config";
+import {fakeDataService} from "./fake-data.service";
 
 const logger = getLogger(`main-service`);
 
 export class MainService {
-    private spiService: SpiService;
+    private spiService: SpiService | null;
 
     private socketService: SocketService;
 
@@ -20,29 +22,32 @@ export class MainService {
     /**
      * constructor
      */
-    constructor(spiService: SpiService, socketService: SocketService) {
+    constructor(spiService: SpiService | null, socketService: SocketService) {
         this.spiService = spiService;
         this.socketService = socketService;
         this.trimService = new TrimService();
 
         // subscribe the socket service to the modules subject
         Store.ModulesSubject.subscribe(async (data) => {
-            await this.socketService.sendSensorData(data);
+            await this.socketService.sendSensorData(this.roundAllData(JSON.parse(JSON.stringify(data)) as ISensorData));
         });
 
         // subscribe the ambient device to the simulation subject
         Store.SimDataSubject.subscribe((data) => {
+            // Let Program run if spi service is not start able
+            if (!this.spiService) return;
+
             const ambientDevice = this.spiService.Devices.find(
-                (d) => d.name === 'Ambient'
+                (d) => d.name === `Ambient`,
             );
 
             // send six bytes, where only the first byte has real data (sun data from the simulation)
             const message = this.spiService.createSpiMessage(
-                Buffer.from([data.sun, 0, 0, 0, 0, 0])
+                Buffer.from([data.sun, 0, 0, 0, 0, 0]),
             );
 
             if (!ambientDevice) {
-                logger.error('the ambient device was not found!');
+                logger.error(`the ambient device was not found!`);
 
                 return;
             }
@@ -51,7 +56,7 @@ export class MainService {
 
             if (message[0].receiveBuffer) {
                 logger.info(
-                    `successfully sent the sun simulation data to ambient device!`
+                    `successfully sent the sun simulation data to ambient device!`,
                 );
             }
         });
@@ -61,6 +66,16 @@ export class MainService {
      * Entry Point
      */
     public async StartApp() {
+        // Check for timeout of Simulation
+        if (Store.SimDataSubject.value.timestamp < new Date(new Date().getTime() - config.socketServerConfig.simulationTimeout).getTime()) {
+            Store.SimDataSubject.next({
+                timestamp: new Date().getTime(),
+                sun: 0,
+                wind: 0,
+                energyBalance: 0,
+            });
+        }
+
         // trim data using current measurements
         const trimData = this.trimService.trim({
             ...Store.ModulesSubject.value,
@@ -69,21 +84,32 @@ export class MainService {
 
         // send the trimmed data to Arduinos
         // and write their current measurements into the store
-        Store.ModulesSubject.next({
-            timestamp: Date.now(),
-            modules: this.sendCommandAndReadSensorData(trimData),
-        });
+        if (!config.spiServiceConfig.fakeSpiMode) {
+            if (!this.spiService) throw new Error(`sendingCommand with spiService = null => turn on fakeSpiMode or fix SpiService`);
+            Store.ModulesSubject.next({
+                timestamp: Date.now(),
+                modules: this.sendCommandAndReadSensorData(trimData),
+            });
+        } else {
+            Store.ModulesSubject.next({
+                timestamp: Date.now(),
+                modules: fakeDataService.fakeSPICommunication(trimData),
+            });
+        }
     }
 
     /**
      * retrieves the sensor data of all slaves
      */
     public sendCommandAndReadSensorData(
-        spiData: ISpiData
+        spiData: ISpiData,
     ): [IModule, IModule, IModule] {
+        // Let Program run if spi service is not start able
+        if (!this.spiService) throw new Error(`sendingCommand with spiService = null => should not happen`);
         const modules = this.spiService.Devices.reduce<IModule[]>(
             (acc, curr) => {
                 // skip the Ambient LEDs Controller
+                if (!this.spiService) throw new Error(`sendingCommand with spiService = null => should not happen`);
                 if (curr.name === `Ambient`) {
                     return acc;
                 }
@@ -92,7 +118,7 @@ export class MainService {
 
                 if (!data) {
                     logger.error(
-                        `couldn't retrieve Spi Data for sector ${curr.name}`
+                        `couldn't retrieve Spi Data for sector ${curr.name}`,
                     );
                     return acc;
                 }
@@ -111,7 +137,7 @@ export class MainService {
                         0,
                         0,
                         0,
-                    ])
+                    ]),
                 );
 
                 // send message
@@ -123,7 +149,7 @@ export class MainService {
                  */
                 if (msg[0].receiveBuffer) {
                     logger.info(
-                        `successfully received data from sector ${curr.name}!`
+                        `successfully received data from sector ${curr.name}!`,
                     );
 
                     // TODO check if & works
@@ -138,15 +164,24 @@ export class MainService {
                     acc.push(module);
                 } else {
                     logger.error(
-                        `couldn't read the sensor data of sector ${curr.name}`
+                        `couldn't read the sensor data of sector ${curr.name}`,
                     );
                 }
 
                 return acc;
             },
-            []
+            [],
         );
 
         return modules as [IModule, IModule, IModule];
+    }
+
+    private roundAllData(data: ISensorData) {
+        const sensorData = data;
+        sensorData.modules.forEach((module, index) => {
+            sensorData.modules[index].sensorOutside = Math.round(module.sensorOutside);
+            sensorData.modules[index].sensorInside = Math.round(module.sensorInside);
+        });
+        return sensorData;
     }
 }

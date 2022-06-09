@@ -6,6 +6,7 @@ import { v4 as uuidGenerator } from 'uuid';
 import { IWebsocketConnection, IWebsocketMessage, IWebsocketResponse } from '../interfaces/socket-service';
 import { ISensorData } from "../interfaces/socket-payload";
 import Store from '../store/Store';
+import {config} from "../config";
 
 const logger = getLogger(`socket-service`);
 
@@ -21,6 +22,9 @@ export class SocketService {
         this.socketIOServer.on(`connect`, (socket) => {
             const uuid = uuidGenerator();
             logger.info(`new client try's to connect`);
+            socket.error((err: any) => {
+                logger.error(JSON.stringify(err));
+            });
             socket.on(`authenticate`, () => {
                 // TODO: Authenticate ??
                 this.connections.push({
@@ -36,7 +40,6 @@ export class SocketService {
                 logger.info(`client disconnected. ${this.connections.length} client(s) now connected.`);
             });
         });
-        // setInterval(() => this.sendTestData(), 5000);
     }
 
     public async sendSensorData(data: ISensorData) {
@@ -53,12 +56,17 @@ export class SocketService {
                                 connection.messageQueue.splice(connection.messageQueue.findIndex((message) => message.uuid === responseData.uuid), 1);
 
                                 // write sim state into store
-                                Store.SimDataSubject.next({
-                                    sun: responseData.sun,
-                                    wind: responseData.wind,
-                                    energyBalance: responseData.energyBalance,
-                                });
+                                if (responseData.sun || responseData.wind || responseData.energyBalance) {
+                                    Store.SimDataSubject.next({
+                                        timestamp: new Date().getTime(),
+                                        sun: responseData.sun,
+                                        wind: responseData.wind,
+                                        energyBalance: responseData.energyBalance,
+                                    });
+                                }
                                 logger.debug(JSON.stringify(responseData));
+                            } else {
+                                logger.warn(`message: ${responseData.uuid} from user: ${connection.uuid} was not ack`);
                             }
                             // remove event listeners if no messages are pending
                             if (connection.messageQueue.length === 0) {
@@ -72,6 +80,13 @@ export class SocketService {
                         uuid: uuidGenerator(),
                         payload: data,
                     };
+
+                    if (connection.messageQueue.length > config.socketServerConfig.maxMessagesInQueue) {
+                        const toDeleteMessageCount = connection.messageQueue.length - config.socketServerConfig.maxMessagesInQueue;
+                        connection.messageQueue.splice(0, toDeleteMessageCount);
+                        logger.warn(`message queue was over max messages for user ${connection.uuid} => deleted first ${toDeleteMessageCount} messages`);
+                    }
+
                     // push socket message to message queue
                     connection.messageQueue.push(socketMessage);
 
@@ -90,43 +105,6 @@ export class SocketService {
             logger.error(`Connections was undefined`);
         }
     }
-
-    // Use this if you want to send test data
-
-    // private sendTestData() {
-    //     const moduleOne: IModule = {
-    //         sector: `One`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //     const moduleTwo: IModule = {
-    //         sector: `Two`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //     const moduleThree: IModule = {
-    //         sector: `Three`,
-    //         sensorOutside: this.getRandomInt(100, 400),
-    //         sensorInside: this.getRandomInt(100, 400),
-    //         pumpLevel: this.getRandomInt(-100, 100),
-    //     };
-    //
-    //     const sensorData: ISensorData = {
-    //         timestamp: Date.now(),
-    //         modules: [moduleOne, moduleTwo, moduleThree],
-    //     };
-    //     this.sendSensorData(sensorData);
-    // }
-    //
-    // private getRandomInt(min: number, max: number) {
-    //     // eslint-disable-next-line no-param-reassign
-    //     min = Math.ceil(min);
-    //     // eslint-disable-next-line no-param-reassign
-    //     max = Math.floor(max);
-    //     return Math.round(Math.floor(Math.random() * (max - min)) + min);
-    // }
 }
 
 export const socketService = new SocketService();
