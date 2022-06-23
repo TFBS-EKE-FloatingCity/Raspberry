@@ -7,6 +7,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+#translatet Files
+src/*.js
+src/services/*.js
+src/classes/*.js
+src/store/*.js
+
 # Dependencies
 yarn.lock
 
