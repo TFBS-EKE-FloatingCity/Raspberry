@@ -29,6 +29,9 @@ const server = app.listen(app.get(`port`), () => {
     logger.info(`listening on port ${app.get(`port`)}`);
 });
 
+/**
+ * Start WebSocket for the Visualisation
+ */
 socketService.start(server);
 
 if (spiService || config.spiServiceConfig.fakeSpiMode) {
