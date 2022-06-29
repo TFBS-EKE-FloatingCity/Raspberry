@@ -19,6 +19,7 @@ export class SocketService {
     public start(server: HttpServer) {
         logger.info(`start socket.io server`);
         this.socketIOServer = new SocketIO(server);
+        
         this.socketIOServer.on(`connect`, (socket) => {
             const uuid = uuidGenerator();
             logger.info(`new client try's to connect`);

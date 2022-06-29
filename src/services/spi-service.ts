@@ -14,7 +14,7 @@ class Device implements IDevice {
 
     constructor(conf: IDeviceConfig) {
         this.spiDevice = spi.openSync(conf.bus, conf.gpio);
-
+        
         this.name = conf.name;
     }
 }

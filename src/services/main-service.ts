@@ -149,7 +149,7 @@ export class MainService {
                  */
                 if (msg[0].receiveBuffer) {
                     logger.info(
-                        `successfully received data from sector ${curr.name}!`,
+                        `successfully received data from sector ${curr.name}! \n ${JSON.stringify(curr)},\n sensorInner ${msg[0].receiveBuffer.readUInt16BE(0)},\n sensorOutside: ${msg[0].receiveBuffer.readUInt16BE(2)},\n pumpLevel:${msg[0].receiveBuffer.readUInt8(4)}\n pump: ${msg[0].receiveBuffer.readUInt8(4) > 100 ? 'Generators' : 'Pumps'}` 
                     );
 
                     // TODO check if & works
