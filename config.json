@@ -24,7 +24,7 @@
             "bus": 0,
             "gpio": 0
         },
-        "fakeSpiMode": true
+        "fakeSpiMode": false
     },
     "socketServerConfig": {
         "maxMessagesInQueue": 10,

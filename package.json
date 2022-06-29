@@ -17,7 +17,7 @@
         "log4js": "^6.3.0",
         "rxjs": "^6.6.3",
         "socket.io": "^2.3.0",
-        "spi-device": "^3.1.0",
+        "spi-device": "^3.1.2",
         "uuid": "^8.3.1"
     },
     "devDependencies": {
