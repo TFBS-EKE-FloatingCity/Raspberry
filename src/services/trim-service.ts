@@ -17,14 +17,7 @@ export class TrimService {
             throw new Error(`trim() => data.modules had not 3 sections`);
         }
 
-        // Find highest module
-        const highest = data.modules.reduce((prevModule, currentModule) => ((prevModule.sensorOutside < currentModule.sensorOutside) ? currentModule : prevModule));
-        // Find highest module
-        const lowest = data.modules.reduce((prevModule, currentModule) => ((prevModule.sensorOutside > currentModule.sensorOutside) ? currentModule : prevModule));
-        // Get remaining module which must be equal or in the middle
-        const middle = data.modules.filter((module) => (module.sector !== highest.sector) && (module.sector !== lowest.sector))[0];
-
-        const average = (highest.sensorOutside + middle.sensorOutside + lowest.sensorOutside) / 3;
+        const average = (data.modules[0].sensorOutside + data.modules[1].sensorOutside + data.modules[2].sensorOutside) / 3;
 
         const trimModuleOne = new TrimModule(data.modules.filter((module) => module.sector === `One`)[0]);
         const trimModuleTwo = new TrimModule(data.modules.filter((module) => module.sector === `Two`)[0]);

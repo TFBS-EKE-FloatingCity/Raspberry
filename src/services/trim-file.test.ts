@@ -15,6 +15,7 @@ describe(`General testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
 
         const testSensorData: ISensorData = {
@@ -47,6 +48,7 @@ describe(`General testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -78,6 +80,7 @@ describe(`General testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -109,6 +112,7 @@ describe(`General testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -142,6 +146,7 @@ describe(`Overflow testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -175,6 +180,7 @@ describe(`Overflow testing`, () => {
             sun: 0,
             energyBalance: 0,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -206,6 +212,7 @@ describe(`Overflow testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -237,6 +244,7 @@ describe(`Overflow testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -270,6 +278,7 @@ describe(`Full up / Full down testing`, () => {
             sun: 0,
             energyBalance: -100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -301,6 +310,7 @@ describe(`Full up / Full down testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -332,6 +342,7 @@ describe(`Full up / Full down testing`, () => {
             sun: 0,
             energyBalance: -100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -363,6 +374,7 @@ describe(`Full up / Full down testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -396,6 +408,7 @@ describe(`Tank full / Tank empty testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -427,6 +440,7 @@ describe(`Tank full / Tank empty testing`, () => {
             sun: 0,
             energyBalance: -100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -458,6 +472,7 @@ describe(`Tank full / Tank empty testing`, () => {
             sun: 0,
             energyBalance: 100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
@@ -489,6 +504,7 @@ describe(`Tank full / Tank empty testing`, () => {
             sun: 0,
             energyBalance: -100,
             wind: 0,
+            timestamp: 0,
         };
         const testSensorData: ISensorData = {
             timestamp: new Date().getTime(),
