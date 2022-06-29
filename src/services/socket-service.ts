@@ -6,6 +6,7 @@ import { v4 as uuidGenerator } from 'uuid';
 import { IWebsocketConnection, IWebsocketMessage, IWebsocketResponse } from '../interfaces/socket-service';
 import { ISensorData } from "../interfaces/socket-payload";
 import Store from '../store/Store';
+
 import { config } from "../config";
 
 const logger = getLogger(`socket-service`);
@@ -19,6 +20,7 @@ export class SocketService {
     public start(server: HttpServer) {
         logger.info(`start socket.io server`);
         this.socketIOServer = new SocketIO(server);
+        
         this.socketIOServer.on(`connect`, (socket) => {
             const uuid = uuidGenerator();
             logger.info(`new client try's to connect`);
@@ -87,7 +89,6 @@ export class SocketService {
                 uuid: uuidGenerator(),
                 payload: data,
             };
-
             if (connection.messageQueue.length > config.socketServerConfig.maxMessagesInQueue) {
                 const toDeleteMessageCount = connection.messageQueue.length - config.socketServerConfig.maxMessagesInQueue;
                 connection.messageQueue.splice(0, toDeleteMessageCount);
