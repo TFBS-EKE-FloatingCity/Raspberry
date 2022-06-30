@@ -10,7 +10,7 @@
 
 ## Step 1: Installation and Preparation
 - [Installation RaspberryPi](doc/Installation.md) 
-- [Preparation Environment](doc/IDE.md)
+- [Preparation Environment](doc/Environment.md)
 
 ## Step 2: Checkout and run
 
