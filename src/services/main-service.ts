@@ -1,14 +1,14 @@
 import { getLogger } from 'log4js';
 import { SpiMessage } from 'spi-device';
 import { Sector } from '../interfaces/common';
-import {IModule, ISensorData} from '../interfaces/socket-payload';
+import { IModule, ISensorData } from '../interfaces/socket-payload';
 import { SocketService } from './socket-service';
 import { SpiService } from './spi-service';
 import { ISpiData } from '../interfaces/spi-service';
 import { TrimService } from './trim-service';
 import Store from '../store/Store';
-import {config} from "../config";
-import {fakeDataService} from "./fake-data.service";
+import { config } from "../config";
+import { fakeDataService } from "./fake-data.service";
 
 const logger = getLogger(`main-service`);
 
@@ -149,7 +149,11 @@ export class MainService {
                  */
                 if (msg[0].receiveBuffer) {
                     logger.info(
-                        `successfully received data from sector ${curr.name}!`,
+                        `sector: ${curr.name}: \n 
+                         !successfully received data! \n 
+                         Innersensor: ${msg[0].receiveBuffer.readUInt16BE(0)};\n
+                         Outersensor: ${msg[0].receiveBuffer.readUInt16BE(2)};\n
+                         PumpLevel: ${msg[0].receiveBuffer.readUInt8(4) ?? 100} -> ${(msg[0].receiveBuffer.readUInt8(4) ?? 100) <= 100 ? `Pump` : `Generator`}; \n`,
                     );
 
                     // TODO check if & works
