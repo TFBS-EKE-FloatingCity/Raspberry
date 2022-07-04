@@ -35,6 +35,7 @@ yarn start
 
 - [Pinout for Raspberry to Arduino](doc/PinOuts.md)
 - [General](doc/General.md)
+- [Problems Solutions](doc/Problems.md)
 
 ## Key Technologies
 
